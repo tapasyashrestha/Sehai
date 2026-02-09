@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANM Dashboard - SEHAI</title>
+    <meta name="description" content="Record patient data and manage referrals">
+    <link rel="stylesheet" href="styles/index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body class="dashboard-page">
+    <!-- Dashboard Navigation -->
+    <nav class="dashboard-nav">
+        <div class="container">
+            <div class="dashboard-nav-content">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="8" y="16" width="24" height="3" rx="1.5" fill="currentColor" />
+                        <rect x="16" y="8" width="3" height="24" rx="1.5" fill="currentColor" />
+                        <circle cx="20" cy="20" r="6" stroke="currentColor" stroke-width="2" fill="none" />
+                    </svg>
+                    <div class="logo-info">
+                        <span class="logo-text">SEHAI</span>
+                        <span class="logo-subtitle">ANM - Ramnagar Sub-Centre</span>
+                    </div>
+                </div>
+                <div class="dashboard-nav-right">
+                    <span class="user-name">Priya Sharma</span>
+                    <span class="user-role">ANM - Ramnagar Sub-Centre</span>
+                    <button class="btn-secondary btn-small" id="logoutBtn">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <div class="container">
+            <div class="dashboard-header">
+                <div>
+                    <h1 class="dashboard-title">Welcome, Priya</h1>
+                    <p class="dashboard-subtitle">Record patient data and manage referrals</p>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <!-- Main Content -->
+                <div class="dashboard-main">
+                    <div class="card">
+                        <h2 class="card-title">New Patient Entry</h2>
+                        <p class="card-subtitle">Record patient information and symptoms</p>
+
+                        <form class="patient-form" id="patientForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="patientName" class="form-label required">Patient Name</label>
+                                    <input type="text" id="patientName" name="patientName" class="form-input"
+                                        placeholder="Full name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="age" class="form-label required">Age</label>
+                                    <input type="number" id="age" name="age" class="form-input" placeholder="Years"
+                                        required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="gender" class="form-label required">Gender</label>
+                                <div class="select-wrapper">
+                                    <select id="gender" name="gender" class="form-select" required>
+                                        <option value="">Select gender</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                    <svg class="select-icon" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="symptoms" class="form-label required">Symptoms</label>
+                                <textarea id="symptoms" name="symptoms" class="form-textarea" rows="4"
+                                    placeholder="Describe symptoms (type or use voice input)" required></textarea>
+                                <button type="button" class="voice-input-btn" id="voiceInputBtn">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                                        <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                                        <line x1="12" y1="19" x2="12" y2="23" />
+                                        <line x1="8" y1="23" x2="16" y2="23" />
+                                    </svg>
+                                    Voice Input
+                                </button>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary">Submit Patient Entry</button>
+                                <button type="button" class="btn-secondary" id="referBtn">Refer to PHC</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="dashboard-sidebar">
+                    <div class="card">
+                        <div class="card-header">
+                            <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M9 11l3 3L22 4" />
+                                <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
+                            </svg>
+                            <h3 class="card-title">Health Tips</h3>
+                        </div>
+
+                        <div class="health-tips">
+                            <div class="health-tip malaria">
+                                <h4 class="health-tip-title">Malaria Prevention</h4>
+                                <p class="health-tip-text">Use mosquito nets and keep surroundings clean</p>
+                            </div>
+                            <div class="health-tip hydration">
+                                <h4 class="health-tip-title">Hydration</h4>
+                                <p class="health-tip-text">Drink clean water regularly, especially in summer</p>
+                            </div>
+                            <div class="health-tip handwashing">
+                                <h4 class="health-tip-title">Hand Washing</h4>
+                                <p class="health-tip-text">Wash hands before meals to prevent infections</p>
+                            </div>
+                            <div class="health-tip vaccination">
+                                <h4 class="health-tip-title">Vaccination</h4>
+                                <p class="health-tip-text">Ensure children receive all scheduled vaccines</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="notification-toast" id="welcomeToast">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                        </svg>
+                        <span>Welcome back!</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+        <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" />
+            <line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+        </svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+    </button>
+
+    <script src="scripts/theme.js"></script>
+    <script src="scripts/anm-dashboard.js"></script>
+</body>
+
+</html>
