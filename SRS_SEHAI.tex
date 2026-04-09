@@ -1,0 +1,676 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{times}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{float}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, fit, backgrounds, calc}
+
+% ── Edit your details here ────────────────────
+\newcommand{\authorname}{Mihir Sanghvi (2427010544)}
+\newcommand{\teachername}{Ms. Stuti Pandey}
+% ──────────────────────────────────────────────
+
+\hypersetup{colorlinks=true, linkcolor=black, urlcolor=black}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textit{Software Requirements Specification for SEHAI}}
+\rhead{\textit{Page \thepage}}
+\renewcommand{\headrulewidth}{0pt}
+
+% Section formatting to match IEEE template
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries}{\thesubsubsection}{0.5em}{}
+
+\setstretch{1.15}
+
+\begin{document}
+
+% ─────────────────────────────────────────────
+%  TITLE PAGE
+% ─────────────────────────────────────────────
+\begin{titlepage}
+    \centering
+    \vspace*{1.5cm}
+    \rule{\linewidth}{2pt}\\[0.6cm]
+    {\LARGE\bfseries SOFTWARE REQUIREMENTS\\[0.3cm] SPECIFICATION\par}
+    \vspace{0.8cm}
+    {\large for\par}
+    \vspace{0.8cm}
+    {\LARGE\bfseries SEHAI : Smart E-Health AI\par}
+    \vspace{0.3cm}
+    {\large\itshape AI-Powered Voice-Enabled Rural Healthcare Assistant\par}
+    \vspace{1.8cm}
+    {\normalsize Version 1.0\par}
+    \vspace{1.2cm}
+    {\normalsize Prepared by : \authorname\par}
+    \vspace{0.8cm}
+    {\normalsize Submitted to : \teachername\par}
+    \vspace{0.8cm}
+    {\normalsize April 2, 2026\par}
+\end{titlepage}
+
+% ─────────────────────────────────────────────
+%  TABLE OF CONTENTS + REVISION HISTORY
+% ─────────────────────────────────────────────
+\pagenumbering{roman}
+\tableofcontents
+\newpage
+
+\section*{Revision History}
+\addcontentsline{toc}{section}{Revision History}
+
+\begin{tabular}{|p{3.5cm}|p{2.5cm}|p{5.5cm}|p{2cm}|}
+    \hline
+    \textbf{Name} & \textbf{Date} & \textbf{Reason For Changes} & \textbf{Version} \\
+    \hline
+    \authorname & April 2, 2026 & Initial draft & 1.0 \\
+    \hline
+    & & & \\
+    \hline
+\end{tabular}
+
+\newpage
+
+% ─────────────────────────────────────────────
+%  1. INTRODUCTION
+% ─────────────────────────────────────────────
+\pagenumbering{arabic}
+\section{Introduction}
+
+\subsection{Purpose}
+This Software Requirements Specification (SRS) describes the complete software requirements for \textbf{SEHAI} (Smart E-Health AI), Version 1.0. SEHAI is an AI-powered, voice-enabled web application designed to strengthen rural healthcare delivery in India by digitising patient intake, enabling machine-learning-based disease triage, and managing patient referrals across the three-tier public health system (Sub-Centre, PHC, and CHC).
+
+This document is intended to serve as the authoritative reference for development, testing, and evaluation of the system. It covers the entire product and not a subsystem.
+
+\subsection{Document Conventions}
+\begin{itemize}
+    \item \textbf{Bold} text is used for terms being defined or emphasised.
+    \item Requirement identifiers follow the pattern \texttt{REQ-<MODULE>-<NUMBER>} (e.g., \texttt{REQ-AUTH-01}).
+    \item Priority levels are stated as \textbf{High}, \textbf{Medium}, or \textbf{Low}.
+    \item Higher-level requirements do not automatically inherit priority; each requirement carries its own priority rating.
+    \item \textit{TBD} is used where information is not yet available.
+\end{itemize}
+
+\subsection{Intended Audience and Reading Suggestions}
+This document is intended for the following readers:
+
+\begin{itemize}
+    \item \textbf{Developers} -- Read all sections, paying particular attention to Sections 3, 4, and 6.
+    \item \textbf{Project Evaluators / Faculty} -- Begin with Sections 1 and 2 for scope, then Section 4 for system features.
+    \item \textbf{Testers} -- Focus on Section 4 (functional requirements) and Section 5 (non-functional requirements).
+    \item \textbf{End Users (ANMs, PHC/CHC Staff)} -- Sections 2.3, 3.1, and 4 are most relevant.
+\end{itemize}
+
+It is recommended to read the document sequentially on first pass, then use the Table of Contents for targeted reference.
+
+\subsection{Product Scope}
+SEHAI is a role-based web platform for rural healthcare workers in India. It targets the existing three-tier public health infrastructure:
+
+\begin{itemize}
+    \item \textbf{Sub-Centre} -- served by Auxiliary Nurse Midwives (ANMs)
+    \item \textbf{Primary Health Centre (PHC)} -- served by general practitioners
+    \item \textbf{Community Health Centre (CHC)} -- served by specialist doctors
+\end{itemize}
+
+The product's goals are to:
+\begin{enumerate}
+    \item Reduce diagnostic delays at the sub-centre level through AI-assisted disease prediction.
+    \item Enable voice-driven data entry for low-literacy healthcare workers.
+    \item Provide a structured, trackable referral pathway from Sub-Centre to PHC to CHC.
+    \item Maintain a centralised, secure patient record accessible across facilities.
+\end{enumerate}
+
+SEHAI does not replace clinical judgment; it serves as a decision-support and workflow-management tool.
+
+\subsection{References}
+\begin{enumerate}
+    \item IEEE Std 830-1998, \textit{IEEE Recommended Practice for Software Requirements Specifications}.
+    \item Karl E. Wiegers, \textit{SRS Template}, Process Impact, 1999.
+    \item XGBoost Documentation, \url{https://xgboost.readthedocs.io}
+    \item FastAPI Documentation, \url{https://fastapi.tiangolo.com}
+    \item Supabase Documentation, \url{https://supabase.com/docs}
+    \item React 18 Documentation, \url{https://reactjs.org}
+    \item Ministry of Health and Family Welfare, India, \textit{Rural Health Statistics}, 2023.
+\end{enumerate}
+
+% ─────────────────────────────────────────────
+%  2. OVERALL DESCRIPTION
+% ─────────────────────────────────────────────
+\section{Overall Description}
+
+\subsection{Product Perspective}
+SEHAI is a new, self-contained product with no predecessor system. It is designed as an intelligent overlay on India's existing three-tier rural healthcare structure, which currently relies on paper-based records and manual referrals.
+
+The system consists of three independently deployable components:
+\begin{itemize}
+    \item \textbf{Frontend SPA} -- React/TypeScript application deployed on Vercel.
+    \item \textbf{Backend API} -- FastAPI Python service hosting the XGBoost ML model, deployed on HuggingFace Spaces (Docker, port 7860).
+    \item \textbf{Database} -- Supabase-hosted PostgreSQL with built-in authentication and Row-Level Security.
+\end{itemize}
+
+The frontend communicates with the backend via REST (JSON over HTTPS) and with Supabase via the Supabase JS client library.
+
+\subsection{Product Functions}
+The major functions SEHAI must perform are:
+\begin{enumerate}
+    \item \textbf{User Registration and Login} -- Role-based access for ANM, PHC doctor, and CHC specialist.
+    \item \textbf{Voice-Enabled Patient Entry} -- Symptom input via microphone (Web Speech API).
+    \item \textbf{AI Disease Prediction} -- XGBoost classifier over 133 standardised symptoms.
+    \item \textbf{Automated Triage and Priority Assignment} -- Low / Medium / High / Critical classification.
+    \item \textbf{Patient Referral Workflow} -- Sub-Centre $\rightarrow$ PHC $\rightarrow$ CHC escalation with status tracking.
+    \item \textbf{Centralised Patient Records} -- Demographics, vitals, symptoms, history, predictions, referral chain.
+    \item \textbf{Role-Specific Dashboards} -- Tailored statistics and views per user role.
+    \item \textbf{Multilingual Support} -- English and Hindi (regional languages planned).
+\end{enumerate}
+
+\subsection{User Classes and Characteristics}
+
+\begin{center}
+\begin{tabular}{|p{2.8cm}|p{5cm}|p{2.2cm}|p{3.2cm}|}
+    \hline
+    \textbf{User Class} & \textbf{Description} & \textbf{Tech Level} & \textbf{Primary Functions Used} \\
+    \hline
+    ANM & Frontline health worker at Sub-Centre. First point of patient contact. & Low & Patient entry, voice input, referral to PHC \\
+    \hline
+    PHC Doctor & General practitioner managing referrals from multiple Sub-Centres. & Medium & Review referrals, update status, escalate to CHC \\
+    \hline
+    CHC Specialist & Senior doctor handling complex and critical cases from PHCs. & Medium--High & Manage critical cases, update outcomes \\
+    \hline
+    System Admin & Manages deployment, database, and user accounts. & High & All system functions \\
+    \hline
+\end{tabular}
+\end{center}
+
+\subsection{Operating Environment}
+\begin{itemize}
+    \item \textbf{Client:} Any modern browser (Chrome 90+, Firefox 88+, Edge 90+, Safari 14+) on desktop or mobile devices.
+    \item \textbf{Backend Server:} Python 3.10+ runtime inside a Docker container on HuggingFace Spaces.
+    \item \textbf{Database:} Supabase cloud-hosted PostgreSQL (managed service).
+    \item \textbf{Network:} Requires internet connectivity. Low-bandwidth optimisation is desired for rural deployments.
+    \item \textbf{Devices:} Android smartphones (Android 8+), low-end tablets, and desktop workstations.
+    \item \textbf{Operating Systems:} Platform-agnostic (browser-based); no native installation required.
+\end{itemize}
+
+\subsection{Design and Implementation Constraints}
+\begin{itemize}
+    \item The ML model is pre-trained; retraining is out of scope for Version 1.0.
+    \item The symptom vocabulary is fixed at 133 terms; free-form symptoms outside this set are not supported.
+    \item Authentication must use Supabase Auth; third-party OAuth (Google, GitHub) is not required in v1.0.
+    \item All Supabase tables must have Row-Level Security (RLS) enabled at all times.
+    \item The backend API must support CORS for \texttt{localhost:5173} (development) and \texttt{*.vercel.app} (production).
+    \item The system must handle patient health data in accordance with applicable Indian data protection norms.
+    \item Frontend must be built with React 18 + TypeScript + Vite; no alternative framework is permitted.
+\end{itemize}
+
+\subsection{User Documentation}
+The following documentation will be delivered with the system:
+\begin{itemize}
+    \item \textbf{In-app Help Page} (\texttt{/help}) -- Step-by-step guidance for each user role, accessible from all dashboards.
+    \item \textbf{API Documentation} -- Auto-generated Swagger/OpenAPI docs at \texttt{/docs} on the FastAPI backend.
+    \item \textbf{README} -- Developer setup and deployment instructions in the project repository.
+\end{itemize}
+
+\subsection{Assumptions and Dependencies}
+\begin{itemize}
+    \item Supabase service availability is assumed; there is no offline fallback for database operations.
+    \item Voice input requires a device with a microphone and a browser that supports the Web Speech API (Chrome is recommended).
+    \item The XGBoost model's triage predictions are assumed to be suitable for decision support, not definitive medical diagnosis.
+    \item Regional language transcription quality depends on the availability and accuracy of third-party speech recognition services.
+    \item ANMs are assumed to have received basic training on using a smartphone application.
+    \item The project depends on continued free-tier availability of HuggingFace Spaces and Supabase.
+\end{itemize}
+
+% ─────────────────────────────────────────────
+%  3. EXTERNAL INTERFACE REQUIREMENTS
+% ─────────────────────────────────────────────
+\section{External Interface Requirements}
+
+\subsection{User Interfaces}
+The system provides the following screens:
+
+\begin{itemize}
+    \item \textbf{Landing Page (\texttt{/}):} Marketing page with feature highlights, hero call-to-action, and links to Login and Signup. Includes a light/dark mode toggle.
+    \item \textbf{Login (\texttt{/login}):} Fields for email, password, and role selection (ANM/PHC/CHC). Displays an inline error on authentication failure without revealing which field is wrong.
+    \item \textbf{Signup (\texttt{/signup}):} Registration form with full name, email, password, confirm password, role, facility name, and facility location.
+    \item \textbf{ANM Dashboard (\texttt{/anm-dashboard}):} Patient entry form, voice input button, AI prediction result panel, refer-to-PHC button, and health tips sidebar.
+    \item \textbf{PHC Dashboard (\texttt{/phc-dashboard}):} Referral table (with patient ID, name, ANM, symptoms, priority badge, status badge), summary statistics cards, and case review panel.
+    \item \textbf{CHC Dashboard (\texttt{/chc-dashboard}):} Specialist referral table (with case ID, patient, referring PHC, priority, status), summary statistics, and critical case management panel.
+    \item \textbf{Patient Record (\texttt{/patient/:id}):} Full patient view -- demographics, vitals, symptoms, AI prediction, referral history, and action buttons (consult, prescribe, refer, request labs).
+    \item \textbf{Help (\texttt{/help}):} Role-specific guidance and FAQ.
+    \item \textbf{Not Found (\texttt{/404}):} Friendly error page with navigation back to dashboard.
+\end{itemize}
+
+All screens must be fully responsive (minimum 360px width) and support light and dark themes. Priority badges use colour coding: \textcolor{red}{\textbf{red}} for critical/high, \textcolor{orange}{\textbf{orange}} for medium, \textcolor{green}{\textbf{green}} for low.
+
+\subsection{Hardware Interfaces}
+\begin{itemize}
+    \item \textbf{Microphone:} Required for voice-enabled symptom entry. Accessed via the browser's Web Speech API; no special drivers needed.
+    \item \textbf{Display:} Minimum 360\,px width; optimised for 720p and above.
+    \item \textbf{Camera, GPS, Bluetooth:} Not used in Version 1.0.
+\end{itemize}
+
+\subsection{Software Interfaces}
+\begin{itemize}
+    \item \textbf{Supabase JS Client (\texttt{@supabase/supabase-js} v2):} Used for authentication (JWT) and all database read/write operations via PostgREST.
+    \item \textbf{FastAPI Backend (v0.115.0):} Consumed by the frontend via \texttt{fetch} or Axios. Provides three REST endpoints: \texttt{GET /health}, \texttt{GET /symptoms}, \texttt{POST /predict}.
+    \item \textbf{Web Speech API:} Browser-native API; no external library or API key required.
+    \item \textbf{XGBoost Runtime (v1.6.2):} Loaded by the FastAPI backend from \texttt{xgboost\_model.json} at startup.
+    \item \textbf{Vite Dev Server (v6.0.1):} Used during development; Vercel serves the production build.
+\end{itemize}
+
+\subsection{Communications Interfaces}
+\begin{itemize}
+    \item All client-server communication is over \textbf{HTTPS} (TLS 1.2 or higher).
+    \item Data format for all API calls is \textbf{JSON}.
+    \item Allowed CORS origins on the backend: \texttt{http://localhost:5173} (dev) and \texttt{https://*.vercel.app} (prod).
+    \item Supabase real-time websocket channels may be used for live referral status updates (planned, v1.1).
+    \item No email or SMS notification interface is included in Version 1.0.
+\end{itemize}
+
+% ─────────────────────────────────────────────
+%  4. SYSTEM FEATURES
+% ─────────────────────────────────────────────
+\section{System Features}
+
+\subsection{User Authentication and Role Management}
+
+\subsubsection{Description and Priority}
+Provides secure registration, login, and role-based routing for ANMs, PHC doctors, and CHC specialists. \textbf{Priority: High.}
+
+\subsubsection{Stimulus/Response Sequences}
+\begin{itemize}
+    \item \textit{User navigates to \texttt{/signup}} $\rightarrow$ System presents registration form $\rightarrow$ User submits $\rightarrow$ System creates profile; redirects to role dashboard.
+    \item \textit{User navigates to \texttt{/login}} $\rightarrow$ Enters credentials $\rightarrow$ System validates with Supabase Auth $\rightarrow$ On success: redirect to role dashboard; on failure: display error.
+    \item \textit{User clicks Logout} $\rightarrow$ System invalidates session token $\rightarrow$ Redirect to landing page.
+    \item \textit{Unauthenticated user accesses dashboard URL} $\rightarrow$ System redirects to \texttt{/login}.
+\end{itemize}
+
+\subsubsection{Functional Requirements}
+\begin{itemize}
+    \item[\texttt{REQ-AUTH-01}] The system shall allow a new user to register with full name, email, password, role, facility name, and facility location.
+    \item[\texttt{REQ-AUTH-02}] The system shall reject registration if the email is already in use, displaying an appropriate message.
+    \item[\texttt{REQ-AUTH-03}] The system shall authenticate users via email and password using Supabase Auth.
+    \item[\texttt{REQ-AUTH-04}] After successful login, the system shall redirect the user to the dashboard matching their role (\texttt{/anm-dashboard}, \texttt{/phc-dashboard}, or \texttt{/chc-dashboard}).
+    \item[\texttt{REQ-AUTH-05}] The system shall prevent users from accessing dashboards outside their assigned role.
+    \item[\texttt{REQ-AUTH-06}] The system shall provide a logout function that invalidates the session and clears local state.
+\end{itemize}
+
+\subsection{Voice-Enabled Patient Entry (ANM)}
+
+\subsubsection{Description and Priority}
+Allows ANMs to register a new patient and enter symptoms by voice, with AI-assisted disease prediction triggered on submission. \textbf{Priority: High.}
+
+\subsubsection{Stimulus/Response Sequences}
+\begin{itemize}
+    \item \textit{ANM clicks ``Add Patient''} $\rightarrow$ System shows patient entry form.
+    \item \textit{ANM clicks microphone icon} $\rightarrow$ System activates Web Speech API $\rightarrow$ ANM speaks symptoms $\rightarrow$ System transcribes and maps to standardised symptom tags.
+    \item \textit{ANM submits form} $\rightarrow$ System saves patient record $\rightarrow$ Calls \texttt{POST /predict} $\rightarrow$ Displays predicted disease, confidence, description, and precautions.
+\end{itemize}
+
+\subsubsection{Functional Requirements}
+\begin{itemize}
+    \item[\texttt{REQ-ANM-01}] The system shall provide a form for patient name, age, gender, symptoms (text), and clinical notes.
+    \item[\texttt{REQ-ANM-02}] The system shall provide a microphone button that activates the Web Speech API for hands-free symptom dictation.
+    \item[\texttt{REQ-ANM-03}] The system shall map transcribed speech to the 133-symptom standardised vocabulary where possible.
+    \item[\texttt{REQ-ANM-04}] On form submission, the system shall save the patient record to the \texttt{patients} table and return a generated patient ID.
+    \item[\texttt{REQ-ANM-05}] The system shall call \texttt{POST /predict} with the entered symptoms and display the result (disease, confidence, description, precautions) on the dashboard.
+    \item[\texttt{REQ-ANM-06}] The prediction result shall be saved to the \texttt{predictions} table linked to the patient.
+    \item[\texttt{REQ-ANM-07}] The ANM dashboard shall display contextual health tips (malaria prevention, hydration, vaccination, hand hygiene) in a sidebar.
+\end{itemize}
+
+\subsection{Patient Referral to PHC}
+
+\subsubsection{Description and Priority}
+Allows ANMs to escalate patients to a PHC with priority classification and reason documentation. \textbf{Priority: High.}
+
+\subsubsection{Stimulus/Response Sequences}
+\begin{itemize}
+    \item \textit{ANM clicks ``Refer to PHC''} for a patient $\rightarrow$ System shows referral form $\rightarrow$ ANM selects target PHC, priority, and enters reason $\rightarrow$ System creates referral record with status \texttt{pending}.
+\end{itemize}
+
+\subsubsection{Functional Requirements}
+\begin{itemize}
+    \item[\texttt{REQ-REF-01}] The system shall allow an ANM to create a referral for any patient they registered, specifying target facility, priority (low/medium/high/critical), and reason.
+    \item[\texttt{REQ-REF-02}] A new referral shall be saved to the \texttt{referrals} table with status \texttt{pending} and a creation timestamp.
+    \item[\texttt{REQ-REF-03}] The referred patient shall appear in the target PHC doctor's referral table immediately after creation.
+\end{itemize}
+
+\subsection{PHC Dashboard and Referral Management}
+
+\subsubsection{Description and Priority}
+Provides PHC doctors with a view of all incoming referrals, tools to review cases, update status, and escalate to CHC. \textbf{Priority: High.}
+
+\subsubsection{Stimulus/Response Sequences}
+\begin{itemize}
+    \item \textit{PHC doctor logs in} $\rightarrow$ Dashboard loads referral table with all pending/active referrals for their facility.
+    \item \textit{Doctor clicks a referral row} $\rightarrow$ System opens full patient record.
+    \item \textit{Doctor updates referral status} $\rightarrow$ System updates \texttt{referrals} table with new status, reviewer ID, and timestamp.
+    \item \textit{Doctor clicks ``Refer to CHC''} $\rightarrow$ System creates a new referral record targeting a CHC.
+\end{itemize}
+
+\subsubsection{Functional Requirements}
+\begin{itemize}
+    \item[\texttt{REQ-PHC-01}] The PHC dashboard shall display all referrals addressed to the doctor's facility, showing patient ID, name, referring ANM, symptoms, priority badge, and status badge.
+    \item[\texttt{REQ-PHC-02}] The dashboard shall display summary statistics: total cases, pending referrals, treated cases, and cases referred to CHC.
+    \item[\texttt{REQ-PHC-03}] The doctor shall be able to open a full patient record from any referral row.
+    \item[\texttt{REQ-PHC-04}] The doctor shall be able to update a referral status to \texttt{reviewed}, \texttt{in\_progress}, or \texttt{completed}, with optional notes.
+    \item[\texttt{REQ-PHC-05}] The doctor shall be able to escalate a patient to a CHC by creating a new referral with updated priority and clinical notes.
+\end{itemize}
+
+\subsection{CHC Dashboard and Specialist Management}
+
+\subsubsection{Description and Priority}
+Provides CHC specialists with a view of escalated cases and tools to manage critical patients. \textbf{Priority: High.}
+
+\subsubsection{Stimulus/Response Sequences}
+\begin{itemize}
+    \item \textit{CHC specialist logs in} $\rightarrow$ Dashboard loads specialist referral table.
+    \item \textit{Specialist updates case status} $\rightarrow$ System saves new status and timestamp.
+\end{itemize}
+
+\subsubsection{Functional Requirements}
+\begin{itemize}
+    \item[\texttt{REQ-CHC-01}] The CHC dashboard shall display all referrals targeted at the specialist's facility, showing case ID, patient details, referring PHC, symptoms, priority, and status.
+    \item[\texttt{REQ-CHC-02}] The dashboard shall display summary statistics: total cases, critical cases, completed, and in-progress.
+    \item[\texttt{REQ-CHC-03}] The specialist shall be able to update case status to \texttt{in\_progress} or \texttt{completed} and add consultation notes.
+\end{itemize}
+
+\subsection{AI Disease Prediction Engine}
+
+\subsubsection{Description and Priority}
+A FastAPI backend service that runs an XGBoost classifier over 133 standardised symptoms to return a predicted disease with confidence score and precautions. \textbf{Priority: High.}
+
+\subsubsection{Stimulus/Response Sequences}
+\begin{itemize}
+    \item \textit{Frontend sends \texttt{POST /predict} with symptom array} $\rightarrow$ Backend encodes to 133-dim binary vector $\rightarrow$ XGBoost inference $\rightarrow$ Returns predicted disease, confidence, description, precautions.
+    \item \textit{Frontend sends \texttt{GET /symptoms}} $\rightarrow$ Backend returns list of 133 supported symptom names.
+    \item \textit{Frontend sends \texttt{GET /health}} $\rightarrow$ Backend returns service status and model load state.
+\end{itemize}
+
+\subsubsection{Functional Requirements}
+\begin{itemize}
+    \item[\texttt{REQ-AI-01}] The \texttt{POST /predict} endpoint shall accept an array of symptom name strings and return: predicted disease name, confidence score (0--1), disease description, and list of precautions.
+    \item[\texttt{REQ-AI-02}] The endpoint shall return HTTP 400 if the symptom array is empty.
+    \item[\texttt{REQ-AI-03}] The endpoint shall return HTTP 500 if the XGBoost model failed to load at startup.
+    \item[\texttt{REQ-AI-04}] The \texttt{GET /symptoms} endpoint shall return the complete list of 133 supported symptom names and their count.
+    \item[\texttt{REQ-AI-05}] The \texttt{GET /health} endpoint shall return service status and whether the model is loaded.
+\end{itemize}
+
+\subsection{Patient Record Management}
+
+\subsubsection{Description and Priority}
+Provides a comprehensive, role-accessible patient record view with actions. \textbf{Priority: Medium.}
+
+\subsubsection{Stimulus/Response Sequences}
+\begin{itemize}
+    \item \textit{Authorised user navigates to \texttt{/patient/:id}} $\rightarrow$ System loads full patient record from Supabase.
+    \item \textit{User clicks an action button} $\rightarrow$ System processes the action (update notes, create referral, etc.).
+\end{itemize}
+
+\subsubsection{Functional Requirements}
+\begin{itemize}
+    \item[\texttt{REQ-PAT-01}] The patient record page shall display: name, age, gender, contact, address, symptoms, clinical notes, medical history, vitals (temperature, BP, heart rate, SpO2), AI prediction results, and referral history.
+    \item[\texttt{REQ-PAT-02}] Authorised users shall be able to start a consultation, add prescription notes, request lab tests, or create a CHC referral from the patient record page.
+    \item[\texttt{REQ-PAT-03}] Only users with a valid session and appropriate role shall be able to access patient records (enforced via RLS).
+\end{itemize}
+
+% ─────────────────────────────────────────────
+%  5. OTHER NONFUNCTIONAL REQUIREMENTS
+% ─────────────────────────────────────────────
+\section{Other Nonfunctional Requirements}
+
+\subsection{Performance Requirements}
+\begin{itemize}
+    \item \texttt{POST /predict} shall respond within \textbf{2 seconds} under normal load conditions.
+    \item Dashboard pages shall load within \textbf{3 seconds} on a 4G mobile connection (10 Mbps).
+    \item The system shall support at least \textbf{100 concurrent users} without degradation in response time beyond 20\%.
+    \item Database queries for referral tables shall return results in under \textbf{1 second} for datasets up to 10,000 records.
+\end{itemize}
+
+\subsection{Safety Requirements}
+\begin{itemize}
+    \item The system shall display a clear disclaimer on all prediction result screens stating: \textit{``This prediction is an AI-assisted triage tool and does not constitute a medical diagnosis. Clinical judgment must be applied.''}
+    \item The system shall not allow a referral to be marked \texttt{completed} without a reviewer ID being recorded, ensuring accountability.
+    \item Patient records must never be permanently deleted via the UI; soft-deletion or archiving must be used if removal is required.
+\end{itemize}
+
+\subsection{Security Requirements}
+\begin{itemize}
+    \item All data in transit must be encrypted using TLS 1.2 or higher (HTTPS enforced).
+    \item Row-Level Security (RLS) must be enabled on all Supabase tables at all times.
+    \item User passwords must be hashed by Supabase Auth (bcrypt); plaintext passwords must never be stored or logged.
+    \item Session tokens must expire after \textbf{24 hours} of inactivity.
+    \item The API must reject requests without a valid authentication token with HTTP 401.
+    \item Environment variables (\texttt{.env}) containing API keys or database credentials must never be committed to version control.
+\end{itemize}
+
+\subsection{Software Quality Attributes}
+\begin{itemize}
+    \item \textbf{Usability:} The ANM interface must be operable by a user with minimal digital literacy. All critical actions must be completable within 3 taps. Error messages must use plain language.
+    \item \textbf{Reliability:} System uptime must be 99\% during operating hours (6 AM--10 PM IST). On backend failure, the frontend must show an informative error state.
+    \item \textbf{Maintainability:} The ML model must be replaceable by swapping \texttt{xgboost\_model.json} with no code changes. Database migrations must be version-controlled and applied sequentially.
+    \item \textbf{Portability:} The frontend must run on any modern browser across Android, iOS, Windows, and macOS without modification.
+    \item \textbf{Scalability:} The backend must support horizontal scaling via Docker containerisation.
+    \item \textbf{Accessibility:} The UI must use sufficient colour contrast (WCAG AA) and support keyboard navigation on desktop.
+\end{itemize}
+
+\subsection{Business Rules}
+\begin{itemize}
+    \item An ANM may only create referrals to PHCs; they cannot directly refer to CHCs.
+    \item Only PHC doctors may escalate referrals to CHCs.
+    \item Each user can only view and manage records belonging to their facility (enforced via RLS policies).
+    \item A prediction result is advisory only and must be reviewed by a qualified healthcare professional before any clinical action is taken.
+    \item Patient records are owned by the facility that created them; cross-facility access is granted only through the referral mechanism.
+\end{itemize}
+
+% ─────────────────────────────────────────────
+%  6. OTHER REQUIREMENTS
+% ─────────────────────────────────────────────
+\section{Other Requirements}
+
+\subsection{Database Requirements}
+The system uses four primary tables in Supabase PostgreSQL: \texttt{profiles}, \texttt{patients}, \texttt{predictions}, and \texttt{referrals}. All tables must have RLS policies applied. The \texttt{referrals} table implements a state machine: \texttt{pending} $\rightarrow$ \texttt{reviewed} $\rightarrow$ \texttt{in\_progress} $\rightarrow$ \texttt{completed} (or \texttt{rejected} from \texttt{pending}). Vitals are stored as JSONB for schema flexibility. All migrations are version-controlled under \texttt{/supabase/migrations/}.
+
+\subsection{Internationalisation Requirements}
+The UI must support English and Hindi as primary languages in Version 1.0. The internationalisation framework must be structured to allow addition of Marathi, Tamil, and Telugu in a future release without architectural changes. Date and time must be displayed in IST (UTC+5:30).
+
+\subsection{Legal and Compliance Requirements}
+Patient health data handling must comply with applicable Indian data protection legislation. No patient data shall be transmitted to any third-party service not explicitly listed in this SRS. The AI disclaimer (Section 5.2) is a mandatory UI element.
+
+% ─────────────────────────────────────────────
+%  APPENDIX A: GLOSSARY
+% ─────────────────────────────────────────────
+\newpage
+\section*{Appendix A: Glossary}
+\addcontentsline{toc}{section}{Appendix A: Glossary}
+
+\begin{tabular}{|p{3cm}|p{10cm}|}
+    \hline
+    \textbf{Term} & \textbf{Definition} \\
+    \hline
+    ANM & Auxiliary Nurse Midwife -- frontline health worker at Sub-Centre level \\
+    \hline
+    PHC & Primary Health Centre \\
+    \hline
+    CHC & Community Health Centre \\
+    \hline
+    XGBoost & Extreme Gradient Boosting -- ML algorithm used for disease prediction \\
+    \hline
+    RLS & Row-Level Security -- PostgreSQL/Supabase feature restricting data access per row \\
+    \hline
+    SRS & Software Requirements Specification \\
+    \hline
+    JWT & JSON Web Token -- used for session authentication \\
+    \hline
+    CORS & Cross-Origin Resource Sharing \\
+    \hline
+    JSONB & Binary JSON storage type in PostgreSQL \\
+    \hline
+    UUID & Universally Unique Identifier \\
+    \hline
+    TBD & To Be Determined \\
+    \hline
+    IST & Indian Standard Time (UTC+5:30) \\
+    \hline
+\end{tabular}
+
+% ─────────────────────────────────────────────
+%  APPENDIX B: ANALYSIS MODELS
+% ─────────────────────────────────────────────
+\section*{Appendix B: Analysis Models}
+\addcontentsline{toc}{section}{Appendix B: Analysis Models}
+
+% ── TikZ styles ──────────────────────────────
+\tikzset{
+  state/.style={rectangle, rounded corners=6pt, draw=black, thick,
+                minimum width=2.2cm, minimum height=0.8cm,
+                text centered, font=\small\ttfamily, fill=gray!10},
+  arrow/.style={-{Stealth[length=6pt]}, thick},
+  dbbox/.style={rectangle, draw=black, thick, minimum width=3cm,
+                minimum height=1cm, text centered, font=\small\bfseries,
+                fill=gray!12},
+  tierbox/.style={rectangle, rounded corners=4pt, draw=black, thick,
+                  minimum width=3.5cm, minimum height=1.2cm,
+                  text centered, font=\normalsize\bfseries, fill=gray!10},
+  apibox/.style={rectangle, draw=black, thick, minimum width=2.8cm,
+                 minimum height=0.9cm, text centered, font=\small},
+}
+
+% ─────────────────────────────────────────────
+\subsection*{B.1 \ Referral State Machine}
+% ─────────────────────────────────────────────
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=2.6cm]
+
+  \node[state] (pending)    {pending};
+  \node[state, right=of pending]  (reviewed)   {reviewed};
+  \node[state, right=of reviewed] (inprog)     {in\_progress};
+  \node[state, right=of inprog]   (completed)  {completed};
+  \node[state, below=1.4cm of pending] (rejected) {rejected};
+
+  \draw[arrow] (pending)   -- node[above, font=\scriptsize]{doctor reviews}   (reviewed);
+  \draw[arrow] (reviewed)  -- node[above, font=\scriptsize]{treatment starts} (inprog);
+  \draw[arrow] (inprog)    -- node[above, font=\scriptsize]{case closed}       (completed);
+  \draw[arrow] (pending)   -- node[right, font=\scriptsize]{rejected}          (rejected);
+
+\end{tikzpicture}
+\caption*{Referral lifecycle state machine}
+\end{figure}
+
+% ─────────────────────────────────────────────
+\subsection*{B.2 \ Three-Tier System Architecture}
+% ─────────────────────────────────────────────
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=0.9cm and 1.8cm]
+
+  % Tier boxes
+  \node[tierbox, fill=blue!10]  (frontend) {Frontend (React/Vite)\\{\small Vercel}};
+  \node[tierbox, fill=orange!15, right=2.2cm of frontend] (backend)  {Backend (FastAPI)\\{\small HuggingFace Spaces}};
+  \node[tierbox, fill=green!12, below=1.6cm of backend]   (db)       {Database (Supabase)\\{\small PostgreSQL + RLS}};
+  \node[tierbox, fill=purple!10, below=1.6cm of frontend] (browser)  {Browser\\{\small Web Speech API}};
+
+  % Arrows
+  \draw[arrow] (frontend) -- node[above, font=\scriptsize]{REST/JSON (HTTPS)} (backend);
+  \draw[arrow] (frontend) -- node[left,  font=\scriptsize]{Supabase JS client} (db);
+  \draw[arrow] (backend)  -- node[right, font=\scriptsize]{PostgREST} (db);
+  \draw[arrow] (browser)  -- node[below, font=\scriptsize]{voice input} (frontend);
+
+\end{tikzpicture}
+\caption*{High-level system architecture}
+\end{figure}
+
+% ─────────────────────────────────────────────
+\subsection*{B.3 \ Three-Tier Healthcare Data Flow}
+% ─────────────────────────────────────────────
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=3cm]
+
+  \node[tierbox, fill=blue!10]   (anm) {ANM\\{\small Sub-Centre}};
+  \node[tierbox, fill=orange!10, right=of anm] (phc) {PHC Doctor\\{\small Primary Health Centre}};
+  \node[tierbox, fill=red!10,    right=of phc] (chc) {CHC Specialist\\{\small Community Health Centre}};
+
+  \draw[arrow] (anm) -- node[above, font=\scriptsize]{refer patient} node[below, font=\scriptsize]{(low/medium/high)} (phc);
+  \draw[arrow] (phc) -- node[above, font=\scriptsize]{escalate case} node[below, font=\scriptsize]{(high/critical)} (chc);
+
+  % Feedback arrows
+  \draw[arrow, dashed, bend left=30] (phc) to node[above, font=\scriptsize]{status update} (anm);
+  \draw[arrow, dashed, bend left=30] (chc) to node[above, font=\scriptsize]{outcome} (phc);
+
+\end{tikzpicture}
+\caption*{Patient referral data flow across healthcare tiers}
+\end{figure}
+
+% ─────────────────────────────────────────────
+\subsection*{B.4 \ Entity-Relationship Diagram}
+% ─────────────────────────────────────────────
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=2.2cm and 3.5cm]
+
+  \node[dbbox, fill=blue!10]   (profiles)    {profiles\\{\scriptsize id, full\_name, role,}\\{\scriptsize facility\_name}};
+  \node[dbbox, fill=green!10,  right=3.5cm of profiles] (patients)    {patients\\{\scriptsize id, patient\_name, age,}\\{\scriptsize gender, symptoms}};
+  \node[dbbox, fill=orange!10, below=2cm of patients]   (predictions) {predictions\\{\scriptsize id, predicted\_disease,}\\{\scriptsize confidence}};
+  \node[dbbox, fill=red!10,    below=2cm of profiles]   (referrals)   {referrals\\{\scriptsize id, priority, status,}\\{\scriptsize referred\_to}};
+
+  % Relationships
+  \draw[arrow] (profiles)    -- node[above, font=\scriptsize]{creates}   (patients);
+  \draw[arrow] (patients)    -- node[right, font=\scriptsize]{has}        (predictions);
+  \draw[arrow] (patients)    -- node[above, font=\scriptsize]{triggers}   (referrals);
+  \draw[arrow] (profiles)    -- node[left,  font=\scriptsize]{refers}     (referrals);
+  \draw[arrow] (predictions) -- node[below, font=\scriptsize]{linked to}  (referrals);
+
+\end{tikzpicture}
+\caption*{Entity-relationship diagram (simplified)}
+\end{figure}
+
+% ─────────────────────────────────────────────
+\subsection*{B.5 \ API Endpoint Summary}
+% ─────────────────────────────────────────────
+
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+    \hline
+    \textbf{Method} & \textbf{Endpoint} & \textbf{Request} & \textbf{Response} \\
+    \hline
+    GET  & \texttt{/health}   & --                      & \texttt{\{status, model\_loaded\}} \\
+    \hline
+    GET  & \texttt{/symptoms} & --                      & \texttt{\{symptoms[], count\}} \\
+    \hline
+    POST & \texttt{/predict}  & \texttt{\{symptoms[]\}} & \texttt{\{disease, confidence, description, precautions[]\}} \\
+    \hline
+\end{tabular}
+\end{center}
+
+% ─────────────────────────────────────────────
+%  APPENDIX C: TO BE DETERMINED LIST
+% ─────────────────────────────────────────────
+\section*{Appendix C: To Be Determined List}
+\addcontentsline{toc}{section}{Appendix C: To Be Determined List}
+
+\begin{enumerate}
+    \item \textbf{TBD-01:} Specific regional language (Marathi, Tamil, Telugu) support -- implementation timeline not yet defined.
+    \item \textbf{TBD-02:} SMS/WhatsApp notification on referral status change -- third-party service selection pending.
+    \item \textbf{TBD-03:} Offline mode capability for ANMs in areas with no internet connectivity -- feasibility study not yet conducted.
+    \item \textbf{TBD-04:} Integration with government health portals (e.g., ABDM/ABHA) -- regulatory requirements under review.
+    \item \textbf{TBD-05:} Model retraining pipeline and dataset update cadence -- data governance policy not yet established.
+\end{enumerate}
+
+\end{document}
