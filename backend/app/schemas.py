@@ -25,3 +25,9 @@ class SymptomsResponse(BaseModel):
 class HealthResponse(BaseModel):
     status: str
     model_loaded: bool
+
+
+class ImagePredictResponse(BaseModel):
+    predicted_disease: str
+    confidence: float
+    probabilities: dict[str, float]

@@ -1,7 +1,9 @@
-import { ReactNode, useState, useEffect } from 'react'
+import { ReactNode, useState, useRef, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Activity, LogOut, Moon, Sun } from 'lucide-react'
+import { LogOut, Globe } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
+import { useLanguage } from '@/contexts/LanguageContext'
+import '@/styles/sehai-theme.css'
 
 interface DashboardLayoutProps {
     children: ReactNode
@@ -10,27 +12,17 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
     const navigate = useNavigate()
     const { profile, signOut } = useAuth()
-    const [isDark, setIsDark] = useState(false)
+    const { lang, setLang, t, languages } = useLanguage()
+    const [langOpen, setLangOpen] = useState(false)
+    const langRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        const isDarkMode = localStorage.getItem('theme') === 'dark'
-        setIsDark(isDarkMode)
-        if (isDarkMode) {
-            document.documentElement.classList.add('dark')
+        const handler = (e: MouseEvent) => {
+            if (langRef.current && !langRef.current.contains(e.target as Node)) setLangOpen(false)
         }
+        document.addEventListener('mousedown', handler)
+        return () => document.removeEventListener('mousedown', handler)
     }, [])
-
-    const toggleTheme = () => {
-        const newTheme = !isDark
-        setIsDark(newTheme)
-        if (newTheme) {
-            document.documentElement.classList.add('dark')
-            localStorage.setItem('theme', 'dark')
-        } else {
-            document.documentElement.classList.remove('dark')
-            localStorage.setItem('theme', 'light')
-        }
-    }
 
     const handleLogout = async () => {
         await signOut()
@@ -38,53 +30,85 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     }
 
     const roleLabels: Record<string, string> = {
-        anm: 'ANM',
+        anm: 'ANM · Sub-Centre',
         phc: 'PHC Doctor',
         chc: 'CHC Specialist',
     }
 
     const userName = profile?.full_name || 'User'
-    const userRole = profile ? `${roleLabels[profile.role] || profile.role}${profile.facility_name ? ` - ${profile.facility_name}` : ''}` : ''
+    const userRole = profile
+        ? `${roleLabels[profile.role] || profile.role}${profile.facility_name ? ` · ${profile.facility_name}` : ''}`
+        : ''
+
+    const currentLang = languages.find(l => l.code === lang)
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
-            {/* Navigation */}
-            <nav className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-                <div className="container mx-auto px-4">
-                    <div className="flex items-center justify-between h-16">
-                        <Link to="/" className="flex items-center gap-2">
-                            <Activity className="h-8 w-8 text-primary" />
-                            <div>
-                                <span className="font-bold text-lg">SEHAI</span>
-                                <p className="text-xs text-muted-foreground">{userRole}</p>
-                            </div>
-                        </Link>
-                        <div className="flex items-center gap-4">
-                            <div className="text-right hidden sm:block">
-                                <p className="font-medium">{userName}</p>
-                                <p className="text-xs text-muted-foreground">{userRole}</p>
-                            </div>
-                            <button
-                                onClick={toggleTheme}
-                                className="p-2 rounded-md hover:bg-accent transition-colors"
-                                aria-label="Toggle theme"
-                            >
-                                {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-                            </button>
-                            <button
-                                onClick={handleLogout}
-                                className="flex items-center gap-2 px-4 py-2 rounded-md bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
-                            >
-                                <LogOut className="h-4 w-4" />
-                                <span className="hidden sm:inline">Logout</span>
-                            </button>
-                        </div>
+        <div className="sh-dash-wrap">
+            <nav className="sh-dash-nav">
+                <Link to="/" className="sh-dash-logo">
+                    <svg width="32" height="20" viewBox="0 0 34 22" fill="none">
+                        <polyline points="0,11 6,11 8,4 11,18 14,7 17,15 20,11 34,11"
+                            stroke="#2bbfa0" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                    </svg>
+                    <div>
+                        <div className="sh-dash-logo-text">SE<span>HAI</span></div>
+                        <div className="sh-dash-role">{userRole}</div>
                     </div>
+                </Link>
+
+                <div className="sh-dash-nav-right">
+                    {/* Language Picker */}
+                    <div ref={langRef} style={{ position: 'relative' }}>
+                        <button
+                            onClick={() => setLangOpen(o => !o)}
+                            style={{
+                                display: 'flex', alignItems: 'center', gap: 6,
+                                background: 'rgba(255,255,255,.08)', border: '1px solid rgba(255,255,255,.15)',
+                                borderRadius: 50, padding: '6px 14px', cursor: 'pointer',
+                                color: '#fff', fontFamily: 'var(--sh-font-head)', fontWeight: 700, fontSize: '.78rem',
+                                letterSpacing: '.03em', transition: 'background .2s',
+                            }}
+                        >
+                            <Globe size={14} />
+                            {currentLang?.native}
+                        </button>
+                        {langOpen && (
+                            <div style={{
+                                position: 'absolute', top: 'calc(100% + 8px)', right: 0,
+                                background: '#fff', borderRadius: 14, boxShadow: '0 8px 32px rgba(0,0,0,.18)',
+                                border: '1px solid var(--sh-border)', minWidth: 160, overflow: 'hidden', zIndex: 200,
+                            }}>
+                                {languages.map(l => (
+                                    <button key={l.code} onClick={() => { setLang(l.code); setLangOpen(false) }}
+                                        style={{
+                                            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                            width: '100%', padding: '10px 16px', border: 'none', background: lang === l.code ? 'var(--sh-teal-light)' : 'transparent',
+                                            cursor: 'pointer', fontFamily: 'var(--sh-font-body)', fontSize: '.88rem',
+                                            color: lang === l.code ? 'var(--sh-teal-3)' : 'var(--sh-text)',
+                                            textAlign: 'left', transition: 'background .15s',
+                                        }}
+                                    >
+                                        <span>{l.native}</span>
+                                        <span style={{ fontSize: '.72rem', color: 'var(--sh-muted)', fontFamily: 'var(--sh-font-head)', fontWeight: 700 }}>{l.label}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    <div style={{ textAlign: 'right', marginRight: 4 }}>
+                        <div className="sh-dash-user-name">{userName}</div>
+                        <div className="sh-dash-user-role">{userRole}</div>
+                    </div>
+                    <button onClick={handleLogout} className="sh-btn sh-btn-sm sh-btn-outline-dark"
+                        style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <LogOut size={15} />
+                        <span>{t('logout')}</span>
+                    </button>
                 </div>
             </nav>
 
-            {/* Main Content */}
-            <main className="container mx-auto px-4 py-8">{children}</main>
+            <main className="sh-dash-main">{children}</main>
         </div>
     )
 }

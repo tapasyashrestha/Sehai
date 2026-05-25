@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SEHAI – Care Workflow Infographic</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #f0faf5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .card {
+    width: 1200px;
+    height: 600px;
+    background: linear-gradient(135deg, #0d3d22 0%, #155c34 40%, #1a7a45 100%);
+    border-radius: 28px;
+    padding: 40px 52px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* decorative circles */
+  .blob1 {
+    position: absolute;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(29,170,96,0.18) 0%, transparent 70%);
+    top: -150px; right: -100px;
+    pointer-events: none;
+  }
+  .blob2 {
+    position: absolute;
+    width: 250px; height: 250px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
+    bottom: -80px; left: 100px;
+    pointer-events: none;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .logo-text {
+    font-size: 20px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: -0.5px;
+  }
+  .logo-text span { color: #4edd96; }
+
+  .title-block { text-align: center; }
+  .title-block h1 {
+    font-size: 26px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: -0.5px;
+    line-height: 1.15;
+  }
+  .title-block h1 em {
+    font-style: normal;
+    color: #4edd96;
+  }
+  .title-block p {
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.65);
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  .badge {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.9);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+  }
+
+  /* ── WORKFLOW TRACK ── */
+  .track {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    flex: 1;
+    position: relative;
+  }
+
+  /* connector lines */
+  .connector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+  .connector-line {
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(78,221,150,0.4), rgba(78,221,150,0.8));
+    position: relative;
+  }
+  .connector-line::after {
+    content: '▶';
+    position: absolute;
+    right: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #4edd96;
+    font-size: 12px;
+  }
+
+  /* stage card */
+  .stage {
+    flex: 1;
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 18px;
+    padding: 20px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    backdrop-filter: blur(4px);
+    transition: background 0.2s;
+  }
+
+  .stage-number {
+    position: absolute;
+    top: -12px;
+    left: 18px;
+    background: #4edd96;
+    color: #0d3d22;
+    font-size: 11px;
+    font-weight: 900;
+    padding: 2px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+  }
+
+  .stage-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 6px;
+  }
+
+  .stage-icon {
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    background: rgba(78,221,150,0.18);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .stage-role {
+    font-size: 10px;
+    font-weight: 700;
+    color: #4edd96;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+  .stage-name {
+    font-size: 15px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.2;
+  }
+
+  .stage-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1;
+  }
+
+  .action-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    font-size: 11.5px;
+    color: rgba(255,255,255,0.80);
+    line-height: 1.4;
+  }
+  .action-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #4edd96;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .stage-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: auto;
+  }
+  .chip {
+    background: rgba(78,221,150,0.15);
+    border: 1px solid rgba(78,221,150,0.3);
+    color: #4edd96;
+    font-size: 9.5px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  /* special outcome stage */
+  .stage.outcome {
+    background: linear-gradient(135deg, rgba(78,221,150,0.22), rgba(29,170,96,0.15));
+    border-color: rgba(78,221,150,0.35);
+  }
+
+  /* ── BOTTOM BAR ── */
+  .bottom {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-top: 22px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 14px;
+    padding: 12px 24px;
+    position: relative;
+  }
+
+  .feat {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+  }
+  .feat-icon {
+    width: 32px; height: 32px;
+    border-radius: 10px;
+    background: rgba(78,221,150,0.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+  .feat-text .ft { font-size: 12px; font-weight: 700; color: #fff; }
+  .feat-text .fs { font-size: 10px; color: rgba(255,255,255,0.55); margin-top: 1px; }
+
+  .feat-div { width: 1px; height: 28px; background: rgba(255,255,255,0.15); margin: 0 4px; }
+
+  .tagline {
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.6);
+    font-style: italic;
+    text-align: right;
+    min-width: 180px;
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="blob1"></div>
+  <div class="blob2"></div>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo">
+      <svg width="26" height="26" viewBox="0 0 28 28" fill="none">
+        <polyline points="2,14 7,14 10,6 13,22 16,10 19,14 26,14"
+          stroke="#4edd96" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="logo-text">SE<span>HAI</span></div>
+    </div>
+    <div class="title-block">
+      <h1>From First Symptom to <em>Specialist Care</em></h1>
+      <p>End-to-end digital referral workflow across India's three-tier public health system</p>
+    </div>
+    <div class="badge">Care Pathway</div>
+  </div>
+
+  <!-- WORKFLOW TRACK -->
+  <div class="track">
+
+    <!-- Stage 1: ANM -->
+    <div class="stage">
+      <div class="stage-number">STEP 1</div>
+      <div class="stage-top">
+        <div class="stage-icon">🏠</div>
+        <div>
+          <div class="stage-role">Sub-Centre · ANM</div>
+          <div class="stage-name">Patient Registration &amp; AI Triage</div>
+        </div>
+      </div>
+      <div class="stage-actions">
+        <div class="action-item"><div class="action-dot"></div>Record patient demographics &amp; vitals</div>
+        <div class="action-item"><div class="action-dot"></div>Select symptoms via voice or touch input</div>
+        <div class="action-item"><div class="action-dot"></div>Run XGBoost disease prediction instantly</div>
+        <div class="action-item"><div class="action-dot"></div>Capture eye / skin photos for CNN analysis</div>
+        <div class="action-item"><div class="action-dot"></div>Submit case with AI-generated triage report</div>
+      </div>
+      <div class="stage-chips">
+        <div class="chip">🎙 Voice Input</div>
+        <div class="chip">🌐 Multilingual</div>
+        <div class="chip">⚡ Real-time AI</div>
+      </div>
+    </div>
+
+    <div class="connector"><div class="connector-line"></div></div>
+
+    <!-- Stage 2: PHC -->
+    <div class="stage">
+      <div class="stage-number">STEP 2</div>
+      <div class="stage-top">
+        <div class="stage-icon">🏥</div>
+        <div>
+          <div class="stage-role">PHC · Doctor</div>
+          <div class="stage-name">Clinical Review &amp; Decision</div>
+        </div>
+      </div>
+      <div class="stage-actions">
+        <div class="action-item"><div class="action-dot"></div>View AI prediction with confidence score</div>
+        <div class="action-item"><div class="action-dot"></div>Review patient history &amp; uploaded images</div>
+        <div class="action-item"><div class="action-dot"></div>Add clinical notes, diagnosis &amp; treatment plan</div>
+        <div class="action-item"><div class="action-dot"></div>Prescribe medication or flag for referral</div>
+        <div class="action-item"><div class="action-dot"></div>Mark case resolved or escalate to CHC</div>
+      </div>
+      <div class="stage-chips">
+        <div class="chip">📋 AI-Assisted</div>
+        <div class="chip">💊 Treatment</div>
+        <div class="chip">📤 Escalate</div>
+      </div>
+    </div>
+
+    <div class="connector"><div class="connector-line"></div></div>
+
+    <!-- Stage 3: CHC -->
+    <div class="stage">
+      <div class="stage-number">STEP 3</div>
+      <div class="stage-top">
+        <div class="stage-icon">🏨</div>
+        <div>
+          <div class="stage-role">CHC · Specialist</div>
+          <div class="stage-name">Critical Case Management</div>
+        </div>
+      </div>
+      <div class="stage-actions">
+        <div class="action-item"><div class="action-dot"></div>Receive fully-documented referral case</div>
+        <div class="action-item"><div class="action-dot"></div>Review complete care timeline &amp; AI insights</div>
+        <div class="action-item"><div class="action-dot"></div>Specialist examination &amp; advanced treatment</div>
+        <div class="action-item"><div class="action-dot"></div>Geo-aware bed &amp; specialist availability</div>
+        <div class="action-item"><div class="action-dot"></div>Close loop with outcome feedback to PHC</div>
+      </div>
+      <div class="stage-chips">
+        <div class="chip">📍 Geo-Aware</div>
+        <div class="chip">🔒 Continuity</div>
+        <div class="chip">✅ Outcome</div>
+      </div>
+    </div>
+
+    <div class="connector"><div class="connector-line"></div></div>
+
+    <!-- Stage 4: Outcome -->
+    <div class="stage outcome">
+      <div class="stage-number">RESULT</div>
+      <div class="stage-top">
+        <div class="stage-icon">✅</div>
+        <div>
+          <div class="stage-role">System · Outcome</div>
+          <div class="stage-name">Closed-Loop Care Record</div>
+        </div>
+      </div>
+      <div class="stage-actions">
+        <div class="action-item"><div class="action-dot"></div>Full audit trail stored per patient</div>
+        <div class="action-item"><div class="action-dot"></div>AI prediction accuracy tracked over time</div>
+        <div class="action-item"><div class="action-dot"></div>Referral patterns inform district health data</div>
+        <div class="action-item"><div class="action-dot"></div>Faster decisions — earlier interventions</div>
+        <div class="action-item"><div class="action-dot"></div>Better outcomes for rural communities</div>
+      </div>
+      <div class="stage-chips">
+        <div class="chip">📊 Analytics</div>
+        <div class="chip">🔄 Feedback Loop</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM BAR -->
+  <div class="bottom">
+    <div class="feat">
+      <div class="feat-icon">🎙</div>
+      <div class="feat-text">
+        <div class="ft">Voice Input</div>
+        <div class="fs">Local Language</div>
+      </div>
+    </div>
+    <div class="feat-div"></div>
+    <div class="feat">
+      <div class="feat-icon">🤖</div>
+      <div class="feat-text">
+        <div class="ft">AI-Powered</div>
+        <div class="fs">XGBoost + ResNet-18</div>
+      </div>
+    </div>
+    <div class="feat-div"></div>
+    <div class="feat">
+      <div class="feat-icon">📍</div>
+      <div class="feat-text">
+        <div class="ft">Geo-Aware</div>
+        <div class="fs">Location Insights</div>
+      </div>
+    </div>
+    <div class="feat-div"></div>
+    <div class="feat">
+      <div class="feat-icon">🌐</div>
+      <div class="feat-text">
+        <div class="ft">Multilingual</div>
+        <div class="fs">Regional Support</div>
+      </div>
+    </div>
+    <div class="feat-div"></div>
+    <div class="feat">
+      <div class="feat-icon">🔒</div>
+      <div class="feat-text">
+        <div class="ft">Secure Records</div>
+        <div class="fs">Patient Privacy</div>
+      </div>
+    </div>
+    <div class="feat-div"></div>
+    <div class="tagline">"Better decisions.<br/>Faster care. Healthier communities."</div>
+  </div>
+
+</div>
+</body>
+</html>

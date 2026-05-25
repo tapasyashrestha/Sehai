@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SEHAI – AI Engine Infographic</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #f0faf5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .card {
+    width: 1200px;
+    height: 600px;
+    background: linear-gradient(135deg, #e8f8f0 0%, #f5fdf9 50%, #e0f5ec 100%);
+    border-radius: 28px;
+    padding: 44px 52px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(26,120,68,0.12);
+  }
+
+  /* decorative blobs */
+  .card::before {
+    content: '';
+    position: absolute;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(39,174,96,0.10) 0%, transparent 70%);
+    top: -80px; right: -60px;
+  }
+  .card::after {
+    content: '';
+    position: absolute;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(39,174,96,0.08) 0%, transparent 70%);
+    bottom: -40px; left: 60px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 36px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .logo svg { width: 28px; height: 28px; }
+  .logo-text {
+    font-size: 22px;
+    font-weight: 900;
+    color: #0d3d22;
+    letter-spacing: -0.5px;
+  }
+  .logo-text span { color: #1daa60; }
+
+  .title-block { text-align: center; }
+  .title-block h1 {
+    font-size: 28px;
+    font-weight: 900;
+    color: #0d3d22;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+  }
+  .title-block p {
+    font-size: 13px;
+    color: #4a7c5f;
+    font-weight: 500;
+    margin-top: 4px;
+  }
+
+  .badge {
+    background: linear-gradient(135deg, #1daa60, #16874c);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* ── ENGINE COLUMNS ── */
+  .engines {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+  }
+
+  .engine {
+    background: #fff;
+    border-radius: 18px;
+    padding: 22px 20px 18px;
+    position: relative;
+    border: 1.5px solid rgba(29,170,96,0.15);
+    box-shadow: 0 4px 20px rgba(26,120,68,0.07);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .engine-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    width: fit-content;
+  }
+  .tag-ml  { background: #e6f9ef; color: #148a44; }
+  .tag-dl  { background: #fff3e6; color: #c96a00; }
+  .tag-dl2 { background: #f0e9ff; color: #6d28d9; }
+
+  .engine-icon {
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+  }
+  .icon-green  { background: #e6f9ef; }
+  .icon-orange { background: #fff3e6; }
+  .icon-purple { background: #f0e9ff; }
+
+  .engine-name {
+    font-size: 15px;
+    font-weight: 800;
+    color: #0d3d22;
+    line-height: 1.2;
+  }
+  .engine-model {
+    font-size: 12px;
+    font-weight: 700;
+    color: #1daa60;
+    margin-top: -6px;
+  }
+  .engine-desc {
+    font-size: 12px;
+    color: #5a7a68;
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  /* pipeline flow inside card */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .flow-step {
+    background: #f0faf5;
+    border: 1px solid #c5e8d5;
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 10px;
+    font-weight: 600;
+    color: #1a6640;
+    white-space: nowrap;
+  }
+  .flow-arrow { color: #1daa60; font-size: 12px; font-weight: 700; }
+
+  .stat-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .stat-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(135deg, #1daa60, #16874c);
+    border-radius: 10px;
+    padding: 8px 12px;
+    flex: 1;
+  }
+  .stat-chip .num {
+    font-size: 18px;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1;
+  }
+  .stat-chip .lbl {
+    font-size: 9px;
+    color: rgba(255,255,255,0.85);
+    font-weight: 600;
+    text-align: center;
+    margin-top: 3px;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .stat-chip.orange { background: linear-gradient(135deg, #f08c00, #c96a00); }
+  .stat-chip.purple { background: linear-gradient(135deg, #7c3aed, #5b21b6); }
+
+  /* ── BOTTOM STRIP ── */
+  .strip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding: 14px 20px;
+    background: linear-gradient(135deg, #1daa60, #0f7a3e);
+    border-radius: 14px;
+    color: #fff;
+  }
+  .strip-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .strip-item .s-num {
+    font-size: 22px;
+    font-weight: 900;
+    color: #fff;
+  }
+  .strip-item .s-lbl {
+    font-size: 11px;
+    color: rgba(255,255,255,0.8);
+    font-weight: 500;
+    line-height: 1.3;
+    max-width: 80px;
+  }
+  .strip-div { width: 1px; height: 30px; background: rgba(255,255,255,0.25); }
+  .strip-tagline {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.9);
+    font-style: italic;
+    letter-spacing: 0.2px;
+  }
+</style>
+</head>
+<body>
+<div class="card">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo">
+      <!-- heartbeat SVG -->
+      <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polyline points="2,14 7,14 10,6 13,22 16,10 19,14 26,14"
+          stroke="#1daa60" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="logo-text">SE<span>HAI</span></div>
+    </div>
+    <div class="title-block">
+      <h1>Dual AI Engine Architecture</h1>
+      <p>Machine Learning + Deep Learning powering India's rural healthcare</p>
+    </div>
+    <div class="badge">AI &amp; ML Stack</div>
+  </div>
+
+  <!-- THREE ENGINE COLUMNS -->
+  <div class="engines">
+
+    <!-- Engine 1: XGBoost -->
+    <div class="engine">
+      <div class="engine-tag tag-ml">
+        <span>⚙</span> Machine Learning
+      </div>
+      <div class="engine-icon icon-green">🧬</div>
+      <div>
+        <div class="engine-name">Symptom-Based<br/>Disease Predictor</div>
+        <div class="engine-model">XGBoost Classifier</div>
+      </div>
+      <div class="engine-desc">
+        Gradient-boosted decision trees trained on a structured symptom matrix.
+        Processes 133 binary symptom inputs to predict the most probable disease
+        with calibrated probability scores.
+      </div>
+      <div class="flow">
+        <div class="flow-step">133 Symptoms</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">XGBoost</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">42 Diseases</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-chip">
+          <div class="num">133</div>
+          <div class="lbl">Symptoms</div>
+        </div>
+        <div class="stat-chip">
+          <div class="num">42</div>
+          <div class="lbl">Diseases</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Engine 2: Eye DL -->
+    <div class="engine">
+      <div class="engine-tag tag-dl">
+        <span>🧠</span> Deep Learning
+      </div>
+      <div class="engine-icon icon-orange">👁️</div>
+      <div>
+        <div class="engine-name">Eye Disease<br/>Detection</div>
+        <div class="engine-model" style="color:#c96a00;">ResNet-18 CNN · PyTorch</div>
+      </div>
+      <div class="engine-desc">
+        Convolutional neural network fine-tuned on retinal &amp; eye fundus imagery.
+        ImageNet-pretrained ResNet-18 with custom classification head, optimised
+        for CPU inference at point-of-care.
+      </div>
+      <div class="flow">
+        <div class="flow-step">Eye Image</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">ResNet-18</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">4 Classes</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-chip orange">
+          <div class="num">4</div>
+          <div class="lbl">Eye Conditions</div>
+        </div>
+        <div class="stat-chip orange">
+          <div class="num">224²</div>
+          <div class="lbl">Input Size</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Engine 3: Skin DL -->
+    <div class="engine">
+      <div class="engine-tag tag-dl2">
+        <span>🧠</span> Deep Learning
+      </div>
+      <div class="engine-icon icon-purple">🩺</div>
+      <div>
+        <div class="engine-name">Skin Disease<br/>Detection</div>
+        <div class="engine-model" style="color:#6d28d9;">ResNet-18 CNN · PyTorch</div>
+      </div>
+      <div class="engine-desc">
+        Transfer-learned ResNet-18 trained on multi-class dermatological imagery.
+        Channels-last memory optimisation enables fast inference on low-spec
+        sub-centre hardware without a GPU.
+      </div>
+      <div class="flow">
+        <div class="flow-step">Skin Photo</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">ResNet-18</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">14 Classes</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-chip purple">
+          <div class="num">14</div>
+          <div class="lbl">Skin Conditions</div>
+        </div>
+        <div class="stat-chip purple">
+          <div class="num">CPU</div>
+          <div class="lbl">Optimised</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM STRIP -->
+  <div class="strip">
+    <div class="strip-item">
+      <div class="s-num">3</div>
+      <div class="s-lbl">AI Models Integrated</div>
+    </div>
+    <div class="strip-div"></div>
+    <div class="strip-item">
+      <div class="s-num">60+</div>
+      <div class="s-lbl">Detectable Conditions</div>
+    </div>
+    <div class="strip-div"></div>
+    <div class="strip-item">
+      <div class="s-num">ML</div>
+      <div class="s-lbl">XGBoost Gradient Boosting</div>
+    </div>
+    <div class="strip-div"></div>
+    <div class="strip-item">
+      <div class="s-num">DL</div>
+      <div class="s-lbl">ResNet-18 CNN · PyTorch</div>
+    </div>
+    <div class="strip-div"></div>
+    <div class="strip-tagline">"AI that works where there's no specialist in sight."</div>
+  </div>
+
+</div>
+</body>
+</html>

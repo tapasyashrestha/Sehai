@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>SEHAI – Workflow (Compact)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #111;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  .card {
+    width: 600px;
+    height: 420px;
+    background: linear-gradient(135deg, #0b3320 0%, #145230 50%, #1a6e40 100%);
+    border-radius: 22px;
+    padding: 28px 28px 22px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(78,221,150,0.14) 0%, transparent 70%);
+    top: -120px; right: -80px;
+    pointer-events: none;
+  }
+  .card::after {
+    content: '';
+    position: absolute;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+    bottom: -60px; left: 60px;
+    pointer-events: none;
+  }
+
+  /* ── TOP ── */
+  .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo { display: flex; align-items: center; gap: 6px; }
+  .logo-text { font-size: 18px; font-weight: 900; color: #fff; }
+  .logo-text span { color: #4edd96; }
+  .top-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1px; color: rgba(255,255,255,0.9);
+    background: rgba(78,221,150,0.18);
+    border: 1px solid rgba(78,221,150,0.3);
+    padding: 4px 12px; border-radius: 20px;
+  }
+
+  /* ── HEADLINE ── */
+  .headline h2 {
+    font-size: 20px; font-weight: 900; color: #fff;
+    line-height: 1.2; letter-spacing: -0.4px;
+  }
+  .headline h2 em { font-style: normal; color: #4edd96; }
+  .headline p {
+    font-size: 11px; color: rgba(255,255,255,0.55);
+    margin-top: 4px; font-weight: 500;
+  }
+
+  /* ── FLOW TRACK ── */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex: 1;
+  }
+
+  .step {
+    flex: 1;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 14px;
+    padding: 14px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    position: relative;
+    height: 100%;
+  }
+  .step.highlight {
+    background: rgba(78,221,150,0.15);
+    border-color: rgba(78,221,150,0.3);
+  }
+
+  .step-num {
+    position: absolute;
+    top: -10px; left: 12px;
+    font-size: 9px; font-weight: 900;
+    background: #4edd96; color: #0b3320;
+    padding: 2px 8px; border-radius: 20px;
+    letter-spacing: 0.4px; text-transform: uppercase;
+  }
+
+  .step-icon { font-size: 22px; margin-top: 4px; }
+
+  .step-role {
+    font-size: 9px; font-weight: 700;
+    color: #4edd96; text-transform: uppercase;
+    letter-spacing: 0.7px; margin-top: 2px;
+  }
+  .step-name {
+    font-size: 13px; font-weight: 800;
+    color: #fff; line-height: 1.2;
+  }
+
+  .step-bullets {
+    display: flex; flex-direction: column; gap: 3px; margin-top: 2px;
+  }
+  .bullet {
+    font-size: 10px; color: rgba(255,255,255,0.68);
+    line-height: 1.35;
+    display: flex; align-items: flex-start; gap: 5px;
+  }
+  .dot {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: #4edd96; flex-shrink: 0; margin-top: 4px;
+  }
+
+  /* arrow between steps */
+  .arrow {
+    display: flex; align-items: center; justify-content: center;
+    width: 32px; flex-shrink: 0;
+    font-size: 14px; color: #4edd96; font-weight: 900;
+  }
+
+  /* ── FEATURE ROW ── */
+  .features {
+    display: flex; gap: 8px; margin-top: auto;
+  }
+  .feat-chip {
+    flex: 1;
+    background: rgba(0,0,0,0.25);
+    border-radius: 10px;
+    padding: 8px 6px;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 3px;
+    border: 1px solid rgba(255,255,255,0.07);
+  }
+  .feat-emoji { font-size: 15px; }
+  .feat-lbl { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.7); text-align: center; text-transform: uppercase; letter-spacing: 0.3px; line-height: 1.3; }
+</style>
+</head>
+<body>
+<div class="card">
+
+  <!-- TOP -->
+  <div class="top">
+    <div class="logo">
+      <svg width="22" height="22" viewBox="0 0 28 28" fill="none">
+        <polyline points="2,14 7,14 10,6 13,22 16,10 19,14 26,14"
+          stroke="#4edd96" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="logo-text">SE<span>HAI</span></div>
+    </div>
+    <div class="top-label">Care Pathway</div>
+  </div>
+
+  <!-- HEADLINE -->
+  <div class="headline">
+    <h2>Sub-Centre to Specialist.<br/><em>One Seamless Chain.</em></h2>
+    <p>Digital referral workflow across India's 3-tier public health system</p>
+  </div>
+
+  <!-- FLOW -->
+  <div class="flow">
+
+    <div class="step">
+      <div class="step-num">Step 1</div>
+      <div class="step-icon">🏠</div>
+      <div class="step-role">Sub-Centre · ANM</div>
+      <div class="step-name">AI Triage &amp;<br/>Case Submission</div>
+      <div class="step-bullets">
+        <div class="bullet"><div class="dot"></div>Symptom capture</div>
+        <div class="bullet"><div class="dot"></div>XGBoost prediction</div>
+        <div class="bullet"><div class="dot"></div>Image upload</div>
+      </div>
+    </div>
+
+    <div class="arrow">▶</div>
+
+    <div class="step">
+      <div class="step-num">Step 2</div>
+      <div class="step-icon">🏥</div>
+      <div class="step-role">PHC · Doctor</div>
+      <div class="step-name">Review &amp;<br/>Treatment Decision</div>
+      <div class="step-bullets">
+        <div class="bullet"><div class="dot"></div>AI confidence score</div>
+        <div class="bullet"><div class="dot"></div>Add clinical notes</div>
+        <div class="bullet"><div class="dot"></div>Treat or escalate</div>
+      </div>
+    </div>
+
+    <div class="arrow">▶</div>
+
+    <div class="step">
+      <div class="step-num">Step 3</div>
+      <div class="step-icon">🏨</div>
+      <div class="step-role">CHC · Specialist</div>
+      <div class="step-name">Critical Case<br/>Management</div>
+      <div class="step-bullets">
+        <div class="bullet"><div class="dot"></div>Full case record</div>
+        <div class="bullet"><div class="dot"></div>Specialist care</div>
+        <div class="bullet"><div class="dot"></div>Geo-aware beds</div>
+      </div>
+    </div>
+
+    <div class="arrow">▶</div>
+
+    <div class="step highlight">
+      <div class="step-num">Result</div>
+      <div class="step-icon">✅</div>
+      <div class="step-role">System · Outcome</div>
+      <div class="step-name">Closed-Loop<br/>Care Record</div>
+      <div class="step-bullets">
+        <div class="bullet"><div class="dot"></div>Full audit trail</div>
+        <div class="bullet"><div class="dot"></div>AI feedback loop</div>
+        <div class="bullet"><div class="dot"></div>Health analytics</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FEATURES -->
+  <div class="features">
+    <div class="feat-chip"><div class="feat-emoji">🎙</div><div class="feat-lbl">Voice Input</div></div>
+    <div class="feat-chip"><div class="feat-emoji">🌐</div><div class="feat-lbl">Multilingual</div></div>
+    <div class="feat-chip"><div class="feat-emoji">🤖</div><div class="feat-lbl">AI-Powered</div></div>
+    <div class="feat-chip"><div class="feat-emoji">📍</div><div class="feat-lbl">Geo-Aware</div></div>
+    <div class="feat-chip"><div class="feat-emoji">🔒</div><div class="feat-lbl">Secure Records</div></div>
+    <div class="feat-chip"><div class="feat-emoji">📊</div><div class="feat-lbl">Analytics</div></div>
+  </div>
+
+</div>
+</body>
+</html>

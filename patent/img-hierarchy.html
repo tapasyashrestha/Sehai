@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>SEHAI – Hierarchy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #1a1a1a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  .card {
+    width: 600px;
+    height: 420px;
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 32px 40px 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    position: relative;
+  }
+
+  /* ── LOGO ROW ── */
+  .logo-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    align-self: flex-start;
+    margin-bottom: 20px;
+  }
+  .logo-row svg { width: 20px; height: 20px; }
+  .logo-text { font-size: 16px; font-weight: 900; color: #0d3d22; letter-spacing: -0.3px; }
+  .logo-text span { color: #1daa60; }
+
+  /* ── HIERARCHY ── */
+  .tree {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    flex: 1;
+    justify-content: center;
+    gap: 0;
+  }
+
+  /* NODE */
+  .node {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #fff;
+    border: 2px solid #e8e8e8;
+    border-radius: 14px;
+    padding: 12px 20px;
+    width: 260px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    position: relative;
+    z-index: 2;
+  }
+  .node.top    { border-color: #1daa60; box-shadow: 0 4px 20px rgba(29,170,96,0.15); }
+  .node.mid    { border-color: #c5dff0; box-shadow: 0 2px 14px rgba(59,130,200,0.10); }
+  .node.bot    { border-color: #e5d5f8; box-shadow: 0 2px 14px rgba(124,58,237,0.10); }
+
+  .node-icon {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .icon-green  { background: #e6f9ef; }
+  .icon-blue   { background: #e8f3fc; }
+  .icon-purple { background: #f3eeff; }
+
+  .node-text {}
+  .node-sub {
+    font-size: 9px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; margin-bottom: 2px;
+  }
+  .sub-green  { color: #1daa60; }
+  .sub-blue   { color: #3b82c4; }
+  .sub-purple { color: #7c3aed; }
+
+  .node-title {
+    font-size: 14px; font-weight: 800; color: #111; line-height: 1.2;
+  }
+  .node-desc {
+    font-size: 10px; color: #888; font-weight: 500; margin-top: 2px;
+  }
+
+  /* CONNECTOR */
+  .connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    z-index: 1;
+    margin: -1px 0;
+  }
+  .conn-line {
+    width: 2px;
+    height: 22px;
+    background: #e0e0e0;
+  }
+  .conn-arrow {
+    width: 0; height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid #d0d0d0;
+    margin-top: -1px;
+  }
+
+  /* BRANCH ROW for PHC + ANM side */
+  .branch-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0;
+    width: 100%;
+    position: relative;
+  }
+
+  .branch-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* horizontal line spanning branches */
+  .h-line {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 220px;
+    height: 2px;
+    background: #e0e0e0;
+  }
+
+  .branch-v {
+    width: 2px;
+    height: 22px;
+    background: #e0e0e0;
+  }
+
+  /* BOTTOM TAGLINE */
+  .tagline {
+    font-size: 10.5px;
+    color: #bbb;
+    font-weight: 500;
+    margin-top: 18px;
+    letter-spacing: 0.3px;
+    align-self: center;
+  }
+  .tagline span { color: #1daa60; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="card">
+
+  <!-- LOGO -->
+  <div class="logo-row">
+    <svg viewBox="0 0 28 28" fill="none">
+      <polyline points="2,14 7,14 10,6 13,22 16,10 19,14 26,14"
+        stroke="#1daa60" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <div class="logo-text">SE<span>HAI</span></div>
+  </div>
+
+  <!-- TREE -->
+  <div class="tree">
+
+    <!-- CHC (TOP) -->
+    <div class="node top">
+      <div class="node-icon icon-green">🏨</div>
+      <div class="node-text">
+        <div class="node-sub sub-green">Tier 3</div>
+        <div class="node-title">CHC — Specialist</div>
+        <div class="node-desc">Manages critical referrals &amp; continuity of care</div>
+      </div>
+    </div>
+
+    <!-- connector down -->
+    <div class="connector">
+      <div class="conn-line"></div>
+      <div class="conn-arrow"></div>
+    </div>
+
+    <!-- PHC (MIDDLE) -->
+    <div class="node mid">
+      <div class="node-icon icon-blue">🏥</div>
+      <div class="node-text">
+        <div class="node-sub sub-blue">Tier 2</div>
+        <div class="node-title">PHC — Doctor</div>
+        <div class="node-desc">Reviews cases, treats or escalates to CHC</div>
+      </div>
+    </div>
+
+    <!-- connector down -->
+    <div class="connector">
+      <div class="conn-line"></div>
+      <div class="conn-arrow"></div>
+    </div>
+
+    <!-- SUB-CENTRE (BOTTOM) -->
+    <div class="node bot">
+      <div class="node-icon icon-purple">🏠</div>
+      <div class="node-text">
+        <div class="node-sub sub-purple">Tier 1</div>
+        <div class="node-title">Sub-Centre — ANM</div>
+        <div class="node-desc">Captures symptoms, runs AI triage, submits cases</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TAGLINE -->
+  <div class="tagline">
+    <span>3-Tier</span> Referral Chain &nbsp;·&nbsp; AI-Powered at Every Level &nbsp;·&nbsp; Sub-Centre → PHC → CHC
+  </div>
+
+</div>
+</body>
+</html>

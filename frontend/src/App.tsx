@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from '@/contexts/AuthContext'
+import { LanguageProvider } from '@/contexts/LanguageContext'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import Index from './pages/Index'
 import Login from './pages/Login'
@@ -14,6 +15,7 @@ import './App.css'
 
 function App() {
     return (
+        <LanguageProvider>
         <AuthProvider>
             <Router>
                 <Routes>
@@ -45,6 +47,7 @@ function App() {
                 </Routes>
             </Router>
         </AuthProvider>
+        </LanguageProvider>
     )
 }
 
