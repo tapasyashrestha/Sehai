@@ -2,7 +2,6 @@ import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import DashboardLayout from '@/components/DashboardLayout'
 import { ArrowLeft, User, Calendar, FileText, Activity, Shield } from 'lucide-react'
-import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
 import { formatSymptom } from '@/lib/symptoms'
 
@@ -57,32 +56,39 @@ export default function PatientRecord() {
     }, [id])
 
     async function fetchPatient(patientId: string) {
-        const { data: patientData } = await supabase
-            .from('patients')
-            .select('*, profiles!created_by(full_name, facility_name)')
-            .eq('id', patientId)
-            .single()
-
-        if (patientData) {
-            setPatient(patientData as unknown as PatientData)
-
-            const { data: predData } = await supabase
-                .from('predictions')
-                .select('*')
-                .eq('patient_id', patientId)
-                .order('created_at', { ascending: false })
-
-            if (predData) setPredictions(predData as PredictionData[])
-
-            const { data: refData } = await supabase
-                .from('referrals')
-                .select('*, profiles!referred_by(full_name, facility_name)')
-                .eq('patient_id', patientId)
-                .order('created_at', { ascending: false })
-
-            if (refData) setReferrals(refData as unknown as ReferralData[])
+        try {
+            const token = localStorage.getItem('sehai_token')
+            
+            // Fetch patient details
+            const pRes = await fetch(`/api/patients/${patientId}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+            if (!pRes.ok) throw new Error('Patient not found')
+            const patientData = await pRes.json()
+            setPatient(patientData as PatientData)
+            
+            // Fetch predictions history
+            const prRes = await fetch(`/api/predictions/patient/${patientId}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+            if (prRes.ok) {
+                const predData = await prRes.json()
+                setPredictions(predData as PredictionData[])
+            }
+            
+            // Fetch referrals history
+            const rRes = await fetch(`/api/referrals?patient_id=${patientId}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+            if (rRes.ok) {
+                const refData = await rRes.json()
+                setReferrals(refData as ReferralData[])
+            }
+        } catch (err) {
+            console.error('Error fetching patient details:', err)
+        } finally {
+            setLoading(false)
         }
-        setLoading(false)
     }
 
     const backPath = profile?.role === 'chc' ? '/chc-dashboard' : profile?.role === 'phc' ? '/phc-dashboard' : '/anm-dashboard'

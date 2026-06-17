@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import DashboardLayout from '@/components/DashboardLayout'
 import { Users, Activity, CheckCircle, TrendingUp } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
 import { useLanguage } from '@/contexts/LanguageContext'
 import '@/styles/sehai-theme.css'
@@ -32,25 +31,60 @@ export default function PHCDashboard() {
     }, [])
 
     async function fetchReferrals() {
-        const { data, error } = await supabase
-            .from('referrals')
-            .select('id, priority, status, reason, created_at, patients(id, patient_name, symptoms), profiles!referred_by(full_name, facility_name)')
-            .eq('referred_to', 'phc')
-            .order('created_at', { ascending: false })
-        if (!error && data) setReferrals(data as unknown as ReferralRow[])
-        setLoading(false)
+        try {
+            const token = localStorage.getItem('sehai_token')
+            const res = await fetch('/api/referrals?referred_to=phc', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+            if (!res.ok) throw new Error('Failed to fetch referrals')
+            const data = await res.json()
+            setReferrals(data as ReferralRow[])
+        } catch (err) {
+            console.error('Error fetching referrals:', err)
+        } finally {
+            setLoading(false)
+        }
     }
 
     async function updateStatus(id: string, status: string) {
-        await supabase.from('referrals').update({ status, reviewed_by: profile?.id, reviewed_at: new Date().toISOString() }).eq('id', id)
+        try {
+            const token = localStorage.getItem('sehai_token')
+            const res = await fetch(`/api/referrals/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ status })
+            })
+            if (!res.ok) throw new Error('Failed to update status')
+        } catch (err) {
+            console.error('Error updating status:', err)
+        }
         fetchReferrals()
     }
 
     async function referToCHC(r: ReferralRow) {
-        await supabase.from('referrals').insert({
-            patient_id: r.patients.id, referred_by: profile?.id, referred_to: 'chc',
-            priority: 'high', reason: `Escalated from PHC: ${r.reason || r.patients.symptoms}`,
-        })
+        try {
+            const token = localStorage.getItem('sehai_token')
+            const res = await fetch('/api/referrals', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    patient_id: r.patients.id,
+                    referred_to: 'chc',
+                    priority: 'high',
+                    reason: `Escalated from PHC: ${r.reason || r.patients.symptoms}`,
+                    prediction_id: null
+                })
+            })
+            if (!res.ok) throw new Error('Failed to refer to CHC')
+        } catch (err) {
+            console.error('Error referring to CHC:', err)
+        }
         await updateStatus(r.id, 'completed')
     }
 

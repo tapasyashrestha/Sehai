@@ -4929,3 +4929,4 @@ Covid,loss_of_smell, tiredness, high_fever,cough,,,,,,,,,,,,,
 Covid,loss_of_taste, cough, tiredness,high_fever,,,,,,,,,,,,,
 Covid, high_fever, tiredness, cough, loss_of_taste,,,,,,,,,,,,,
 Covid, high_fever, loss_of_taste, cough, tiredness,,,,,,,,,,,,,
+Malaria,high_fever,chills

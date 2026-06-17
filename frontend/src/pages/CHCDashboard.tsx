@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import DashboardLayout from '@/components/DashboardLayout'
 import { Users, Activity, CheckCircle, TrendingUp } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
 import { useLanguage } from '@/contexts/LanguageContext'
 import '@/styles/sehai-theme.css'
@@ -32,17 +31,36 @@ export default function CHCDashboard() {
     }, [])
 
     async function fetchReferrals() {
-        const { data, error } = await supabase
-            .from('referrals')
-            .select('id, priority, status, reason, created_at, patients(id, patient_name, symptoms), profiles!referred_by(full_name, facility_name)')
-            .eq('referred_to', 'chc')
-            .order('created_at', { ascending: false })
-        if (!error && data) setReferrals(data as unknown as ReferralRow[])
-        setLoading(false)
+        try {
+            const token = localStorage.getItem('sehai_token')
+            const res = await fetch('/api/referrals?referred_to=chc', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+            if (!res.ok) throw new Error('Failed to fetch referrals')
+            const data = await res.json()
+            setReferrals(data as ReferralRow[])
+        } catch (err) {
+            console.error('Error fetching referrals:', err)
+        } finally {
+            setLoading(false)
+        }
     }
 
     async function updateStatus(id: string, status: string) {
-        await supabase.from('referrals').update({ status, reviewed_by: profile?.id, reviewed_at: new Date().toISOString() }).eq('id', id)
+        try {
+            const token = localStorage.getItem('sehai_token')
+            const res = await fetch(`/api/referrals/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ status })
+            })
+            if (!res.ok) throw new Error('Failed to update status')
+        } catch (err) {
+            console.error('Error updating status:', err)
+        }
         fetchReferrals()
     }
 

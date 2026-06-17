@@ -5,7 +5,6 @@ import PredictionResultCard from '@/components/PredictionResult'
 import { Mic, CheckCircle, Droplet, HandHeart, Syringe, Loader2, Eye, Scan, Upload, Activity, Users, ArrowRight, Globe } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { useLanguage } from '@/contexts/LanguageContext'
-import { supabase } from '@/lib/supabase'
 import { predictDisease, predictEyeDisease, predictSkinDisease, type PredictionResult, type ImagePredictionResult } from '@/lib/api'
 import '@/styles/sehai-theme.css'
 
@@ -51,13 +50,16 @@ export default function ANMDashboard() {
     useEffect(() => {
         showToast(t('welcome_back'))
         if (profile?.id) {
-            const today = new Date().toISOString().split('T')[0]
-            supabase.from('patients').select('id', { count: 'exact' })
-                .eq('created_by', profile.id).gte('created_at', today)
-                .then(({ count }) => setTodayCount(count ?? 0))
-            supabase.from('referrals').select('id', { count: 'exact' })
-                .eq('referred_by', profile.id).gte('created_at', today)
-                .then(({ count }) => setReferralCount(count ?? 0))
+            const token = localStorage.getItem('sehai_token')
+            fetch('/api/patients/stats/today', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+                .then(res => res.json())
+                .then(data => {
+                    setTodayCount(data.patients_today ?? 0)
+                    setReferralCount(data.referrals_today ?? 0)
+                })
+                .catch(err => console.error('Error fetching dashboard stats:', err))
         }
     }, [profile])
 
@@ -89,20 +91,46 @@ export default function ANMDashboard() {
         if (!profile) return
         setSubmitting(true)
         try {
-            const { data: patient, error: pe } = await supabase.from('patients').insert({
-                patient_name: formData.patientName, age: parseInt(formData.age),
-                gender: formData.gender, symptoms: formData.symptoms,
-                symptom_tags: selectedSymptoms, created_by: profile.id,
-                facility_name: profile.facility_name || '',
-            }).select().single()
-            if (pe) throw pe
-            if (prediction && patient) {
-                await supabase.from('predictions').insert({
-                    patient_id: patient.id, symptoms_used: selectedSymptoms,
-                    predicted_disease: prediction.predicted_disease, confidence: prediction.confidence,
-                    disease_description: prediction.description, precautions: prediction.precautions,
-                    predicted_by: profile.id,
+            const token = localStorage.getItem('sehai_token')
+            const pRes = await fetch('/api/patients', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    patient_name: formData.patientName,
+                    age: parseInt(formData.age),
+                    gender: formData.gender,
+                    symptoms: formData.symptoms || 'Not specified',
+                    symptom_tags: selectedSymptoms,
+                    contact: '',
+                    address: '',
+                    medical_history: '',
+                    vitals: {},
+                    notes: ''
                 })
+            })
+            if (!pRes.ok) throw new Error(await pRes.text())
+            const patient = await pRes.json()
+
+            if (prediction && patient) {
+                const prRes = await fetch('/api/predictions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        patient_id: patient.id,
+                        symptoms_used: selectedSymptoms,
+                        predicted_disease: prediction.predicted_disease,
+                        confidence: prediction.confidence,
+                        disease_description: prediction.description || '',
+                        precautions: prediction.precautions || []
+                    })
+                })
+                if (!prRes.ok) throw new Error(await prRes.text())
             }
             showToast(t('submit_entry') + ' ✓')
             setFormData({ patientName: '', age: '', gender: '', symptoms: '' })
@@ -118,28 +146,67 @@ export default function ANMDashboard() {
         }
         setSubmitting(true)
         try {
-            const { data: patient, error: pe } = await supabase.from('patients').insert({
-                patient_name: formData.patientName, age: parseInt(formData.age),
-                gender: formData.gender, symptoms: formData.symptoms || 'Not specified',
-                symptom_tags: selectedSymptoms, created_by: profile.id,
-                facility_name: profile.facility_name || '',
-            }).select().single()
-            if (pe) throw pe
+            const token = localStorage.getItem('sehai_token')
+            const pRes = await fetch('/api/patients', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    patient_name: formData.patientName,
+                    age: parseInt(formData.age),
+                    gender: formData.gender,
+                    symptoms: formData.symptoms || 'Not specified',
+                    symptom_tags: selectedSymptoms,
+                    contact: '',
+                    address: '',
+                    medical_history: '',
+                    vitals: {},
+                    notes: ''
+                })
+            })
+            if (!pRes.ok) throw new Error(await pRes.text())
+            const patient = await pRes.json()
+
             let predictionId = null
             if (prediction && patient) {
-                const { data: pred } = await supabase.from('predictions').insert({
-                    patient_id: patient.id, symptoms_used: selectedSymptoms,
-                    predicted_disease: prediction.predicted_disease, confidence: prediction.confidence,
-                    disease_description: prediction.description, precautions: prediction.precautions,
-                    predicted_by: profile.id,
-                }).select().single()
-                predictionId = pred?.id
+                const prRes = await fetch('/api/predictions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        patient_id: patient.id,
+                        symptoms_used: selectedSymptoms,
+                        predicted_disease: prediction.predicted_disease,
+                        confidence: prediction.confidence,
+                        disease_description: prediction.description || '',
+                        precautions: prediction.precautions || []
+                    })
+                })
+                if (!prRes.ok) throw new Error(await prRes.text())
+                const pred = await prRes.json()
+                predictionId = pred.id
             }
-            await supabase.from('referrals').insert({
-                patient_id: patient.id, referred_by: profile.id, referred_to: 'phc',
-                priority: 'medium', reason: formData.symptoms || 'Referred for further evaluation',
-                prediction_id: predictionId,
+
+            const rRes = await fetch('/api/referrals', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    patient_id: patient.id,
+                    referred_to: 'phc',
+                    priority: 'medium',
+                    reason: formData.symptoms || 'Referred for further evaluation',
+                    prediction_id: predictionId
+                })
             })
+            if (!rRes.ok) throw new Error(await rRes.text())
+
             showToast(t('refer_to_phc') + ' ✓')
             setFormData({ patientName: '', age: '', gender: '', symptoms: '' })
             setSelectedSymptoms([]); setPrediction(null)

@@ -1,14 +1,23 @@
-import { createContext, useContext, useEffect, useState, useRef, ReactNode } from 'react'
-import { Session, User } from '@supabase/supabase-js'
-import { supabase } from '@/lib/supabase'
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 
 export interface Profile {
     id: string
+    email: string
     full_name: string
     role: 'anm' | 'phc' | 'chc'
     facility_name: string
     facility_location: string
     phone: string | null
+}
+
+export interface User {
+    id: string
+    email?: string
+}
+
+export interface Session {
+    access_token: string
+    user: User
 }
 
 interface AuthContextType {
@@ -30,105 +39,132 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null)
     const [profile, setProfile] = useState<Profile | null>(null)
     const [loading, setLoading] = useState(true)
-    const abortRef = useRef(false)
 
     useEffect(() => {
-        let mounted = true
-        abortRef.current = false
+        const token = localStorage.getItem('sehai_token')
+        if (!token) {
+            setLoading(false)
+            return
+        }
 
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            if (!mounted) return
-            console.log('[Auth] Initial session:', session ? 'exists' : 'none')
-            setSession(session)
-            setUser(session?.user ?? null)
-            if (session?.user) {
-                fetchProfile(session.user.id)
-            } else {
-                setLoading(false)
+        console.log('[Auth] Found token, loading user profile...')
+        fetch('/api/auth/me', {
+            headers: {
+                'Authorization': `Bearer ${token}`
             }
         })
-
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(
-            (event, session) => {
-                if (!mounted) return
-                console.log('[Auth] State change:', event)
-                setSession(session)
-                setUser(session?.user ?? null)
-                if (session?.user) {
-                    // Use setTimeout to avoid blocking the auth state change callback
-                    setTimeout(() => {
-                        if (mounted) fetchProfile(session.user.id)
-                    }, 0)
-                } else {
-                    setProfile(null)
-                    setLoading(false)
-                }
-            }
-        )
-
-        return () => {
-            mounted = false
-            abortRef.current = true
-            subscription.unsubscribe()
-        }
+        .then(res => {
+            if (!res.ok) throw new Error('Session expired')
+            return res.json()
+        })
+        .then(data => {
+            const fetchedProfile = data.user as Profile
+            console.log('[Auth] Profile loaded successfully:', fetchedProfile.full_name)
+            setProfile(fetchedProfile)
+            const mockSession = {
+                access_token: token,
+                user: { id: fetchedProfile.id, email: fetchedProfile.email }
+            } as Session
+            setSession(mockSession)
+            setUser(mockSession.user)
+        })
+        .catch(err => {
+            console.warn('[Auth] Session validation failed:', err.message)
+            localStorage.removeItem('sehai_token')
+            setProfile(null)
+            setSession(null)
+            setUser(null)
+        })
+        .finally(() => {
+            setLoading(false)
+        })
     }, [])
-
-    async function fetchProfile(userId: string) {
-        console.log('[Auth] Fetching profile for:', userId)
-        // Try up to 3 times with 1s delay (trigger might not have fired yet)
-        for (let i = 0; i < 3; i++) {
-            if (abortRef.current) return
-            try {
-                const { data, error } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', userId)
-                    .single()
-
-                if (!error && data) {
-                    console.log('[Auth] Profile loaded:', data.full_name, data.role)
-                    setProfile(data as Profile)
-                    setLoading(false)
-                    return
-                }
-                console.warn(`[Auth] Profile attempt ${i + 1} failed:`, error?.message)
-            } catch (err) {
-                console.error('[Auth] Fetch error:', err)
-            }
-            if (i < 2) await new Promise(r => setTimeout(r, 1000))
-        }
-        console.warn('[Auth] Could not load profile after retries')
-        setLoading(false)
-    }
 
     async function signIn(email: string, password: string) {
         console.log('[Auth] signIn called for:', email)
-        const { error } = await supabase.auth.signInWithPassword({ email, password })
-        console.log('[Auth] signIn result:', error ? error.message : 'OK')
-        return { error: error as Error | null }
+        try {
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            })
+            if (!res.ok) {
+                const errData = await res.json()
+                throw new Error(errData.detail || 'Login failed')
+            }
+            const data = await res.json()
+            const token = data.token
+            const profileData = data.user as Profile
+
+            localStorage.setItem('sehai_token', token)
+            const mockSession = {
+                access_token: token,
+                user: { id: profileData.id, email: profileData.email }
+            } as Session
+
+            setProfile(profileData)
+            setSession(mockSession)
+            setUser(mockSession.user)
+
+            return { error: null }
+        } catch (err: any) {
+            console.error('[Auth] signIn error:', err)
+            return { error: err }
+        }
     }
 
     async function signUp(email: string, password: string, metadata: {
         full_name: string; role: string; facility_name?: string
     }) {
         console.log('[Auth] signUp called for:', email)
-        const { data, error } = await supabase.auth.signUp({
-            email,
-            password,
-            options: { data: metadata },
-        })
-        console.log('[Auth] signUp result:', error ? error.message : 'OK', 'identities:', data?.user?.identities?.length)
-        return { data, error: error as Error | null }
+        try {
+            const res = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email,
+                    password,
+                    full_name: metadata.full_name,
+                    role: metadata.role,
+                    facility_name: metadata.facility_name || ""
+                })
+            })
+            if (!res.ok) {
+                const errData = await res.json()
+                throw new Error(errData.detail || 'Registration failed')
+            }
+            const data = await res.json()
+            const token = data.token
+            const profileData = data.user as Profile
+
+            localStorage.setItem('sehai_token', token)
+            const mockSession = {
+                access_token: token,
+                user: { id: profileData.id, email: profileData.email }
+            } as Session
+
+            setProfile(profileData)
+            setSession(mockSession)
+            setUser(mockSession.user)
+
+            return { data: mockSession, error: null }
+        } catch (err: any) {
+            console.error('[Auth] signUp error:', err)
+            return { error: err }
+        }
     }
 
     async function signOut() {
         console.log('[Auth] signOut called')
-        abortRef.current = true
+        try {
+            await fetch('/api/auth/logout', { method: 'POST' })
+        } catch (err) {
+            console.error('[Auth] error during logout:', err)
+        }
+        localStorage.removeItem('sehai_token')
         setProfile(null)
         setSession(null)
         setUser(null)
-        await supabase.auth.signOut()
-        abortRef.current = false
     }
 
     return (

@@ -9,6 +9,7 @@ import ANMDashboard from './pages/ANMDashboard'
 import PHCDashboard from './pages/PHCDashboard'
 import CHCDashboard from './pages/CHCDashboard'
 import PatientRecord from './pages/PatientRecord'
+import DatasetManager from './pages/DatasetManager'
 import Help from './pages/Help'
 import NotFound from './pages/NotFound'
 import './App.css'
@@ -40,6 +41,11 @@ function App() {
                     <Route path="/patient/:id" element={
                         <ProtectedRoute>
                             <PatientRecord />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/dataset" element={
+                        <ProtectedRoute>
+                            <DatasetManager />
                         </ProtectedRoute>
                     } />
                     <Route path="/help" element={<Help />} />

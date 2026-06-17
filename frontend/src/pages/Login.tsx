@@ -55,7 +55,7 @@ export default function Login() {
                 <Link to="/" className="sh-auth-logo">
                     <svg width="32" height="20" viewBox="0 0 34 22" fill="none">
                         <polyline points="0,11 6,11 8,4 11,18 14,7 17,15 20,11 34,11"
-                            stroke="#2bbfa0" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                            stroke="var(--sh-teal)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
                     </svg>
                     <span className="sh-auth-logo-text">SE<span>HAI</span></span>
                 </Link>
@@ -68,10 +68,10 @@ export default function Login() {
                             {languages.find(l => l.code === lang)?.native}
                         </button>
                         {langOpen && (
-                            <div style={{ position: 'absolute', top: 'calc(100% + 8px)', right: 0, background: '#fff', borderRadius: 14, boxShadow: '0 8px 32px rgba(0,0,0,.14)', border: '1px solid var(--sh-border)', minWidth: 160, overflow: 'hidden', zIndex: 200 }}>
+                            <div style={{ position: 'absolute', top: 'calc(100% + 8px)', right: 0, background: 'var(--sh-bg-2)', borderRadius: 14, boxShadow: '0 8px 32px rgba(56, 189, 248, 0.15)', border: '1.5px solid var(--sh-border)', minWidth: 160, overflow: 'hidden', zIndex: 200 }}>
                                 {languages.map(l => (
                                     <button key={l.code} onClick={() => { setLang(l.code); setLangOpen(false) }}
-                                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '10px 16px', border: 'none', background: lang === l.code ? 'var(--sh-teal-light)' : 'transparent', cursor: 'pointer', fontFamily: 'var(--sh-font-body)', fontSize: '.88rem', color: lang === l.code ? 'var(--sh-teal-3)' : 'var(--sh-text)', textAlign: 'left' }}>
+                                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '10px 16px', border: 'none', background: lang === l.code ? 'var(--sh-teal-light)' : 'transparent', cursor: 'pointer', fontFamily: 'var(--sh-font-body)', fontSize: '.88rem', color: lang === l.code ? 'var(--sh-teal)' : 'var(--sh-text)', textAlign: 'left' }}>
                                         <span>{l.native}</span>
                                         <span style={{ fontSize: '.72rem', color: 'var(--sh-muted)', fontFamily: 'var(--sh-font-head)', fontWeight: 700 }}>{l.label}</span>
                                     </button>
@@ -139,7 +139,7 @@ export default function Login() {
                         <div style={{ marginBottom: 24 }}>
                             <svg width="56" height="36" viewBox="0 0 34 22" fill="none">
                                 <polyline points="0,11 6,11 8,4 11,18 14,7 17,15 20,11 34,11"
-                                    stroke="#1a3a34" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                                    stroke="var(--sh-teal)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
                             </svg>
                         </div>
                         <h2>Your Role.<br />Your Dashboard.</h2>
